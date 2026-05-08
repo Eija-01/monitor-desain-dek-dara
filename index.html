@@ -247,7 +247,9 @@
 
                 <div>
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Nama Pekerjaan/File:</label>
-                    <input type="text" id="inputCustomFileName" placeholder="Contoh: Desain_Banner_Promo" class="w-full p-4 text-sm border border-slate-200 rounded-2xl bg-slate-50 outline-none font-bold focus:ring-2 focus:ring-blue-500 transition-all">
+                    <input type="text" id="inputCustomFileName" placeholder="Contoh: Desain Banner Promo" class="w-full p-4 text-sm border border-slate-200 rounded-2xl bg-slate-50 outline-none font-bold focus:ring-2 focus:ring-blue-500 transition-all">
+                    <!-- Petunjuk Ketik Rapi -->
+                    <p class="text-[9px] text-slate-400 mt-2 italic font-bold uppercase tracking-tighter">*WAJIB: Gunakan Huruf Kapital di awal setiap kata. Contoh: "Flayer Design"</p>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button onclick="window.closeUploadConfirm()" class="flex-1 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all">Batal</button>
@@ -614,6 +616,7 @@
                 pendingFileData = reader.result.split(',')[1];
                 pendingFileExt = file.name.split('.').pop();
                 
+                // Tampilkan Modal Konfirmasi & Preview
                 document.getElementById('uploadPreviewImg').src = reader.result;
                 document.getElementById('uploadConfirmModal').classList.remove('hidden');
                 document.getElementById('inputCustomFileName').value = ""; 
@@ -636,6 +639,17 @@
                 triggerError('inputCustomFileName');
                 return showToast("Masukkan nama pekerjaan!", "error");
             }
+
+            // --- REVISI: VALIDASI TITLE CASE (Hanya boleh Kapital di awal setiap kata) ---
+            // Regex: Tiap kata dimulai Huruf Besar, sisanya Huruf Kecil/Angka
+            const words = customName.split(' ');
+            const isTidy = words.every(word => /^[A-Z][a-z0-9]*$/.test(word));
+
+            if (!isTidy) {
+                triggerError('inputCustomFileName');
+                return showToast("Ketik Rapi! Gunakan Kapital di awal setiap kata (Contoh: Flyer Design)", "error");
+            }
+            // -----------------------------------------------------------------------------
 
             if (!pendingFileData) return;
 
