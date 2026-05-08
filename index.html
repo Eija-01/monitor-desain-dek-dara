@@ -240,7 +240,6 @@
             <p class="text-sm text-slate-500 mb-6">Pratinjau hasil kerja Anda sebelum dikirim.</p>
             
             <div class="space-y-4">
-                <!-- Thumbnail Preview -->
                 <div class="w-full aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 mb-4">
                     <img id="uploadPreviewImg" src="" class="w-full h-full object-contain">
                 </div>
@@ -248,8 +247,7 @@
                 <div>
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Nama Pekerjaan/File:</label>
                     <input type="text" id="inputCustomFileName" placeholder="Contoh: Desain Banner Promo" class="w-full p-4 text-sm border border-slate-200 rounded-2xl bg-slate-50 outline-none font-bold focus:ring-2 focus:ring-blue-500 transition-all">
-                    <!-- Petunjuk Ketik Rapi -->
-                    <p class="text-[9px] text-slate-400 mt-2 italic font-bold uppercase tracking-tighter">*WAJIB: Gunakan Huruf Kapital di awal setiap kata. Contoh: "Flayer Design"</p>
+                    <p class="text-[9px] text-slate-400 mt-2 italic font-bold tracking-tighter">*Wajib: Gunakan Huruf Kapital di awal setiap kata. Contoh: "Flyer Design"</p>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button onclick="window.closeUploadConfirm()" class="flex-1 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all">Batal</button>
@@ -259,7 +257,7 @@
         </div>
     </div>
 
-    <!-- Modal Preview Gambar (Zoom) dengan Detail Baru -->
+    <!-- Modal Preview Gambar (Zoom) -->
     <div id="imageModal" class="fixed inset-0 z-[100] modal-overlay hidden flex items-center justify-center p-4">
         <div class="relative max-w-4xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl">
             <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full z-10">
@@ -273,7 +271,6 @@
                     <h3 id="modalWorkerName" class="text-2xl font-black text-slate-800 mb-1">-</h3>
                     <p id="modalDate" class="text-xs text-slate-400 font-bold mb-6 uppercase tracking-widest">-</p>
                     
-                    <!-- Detail Informasi Breakdown -->
                     <div class="space-y-4 border-t border-slate-100 pt-6">
                         <div class="flex justify-between items-center">
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Waktu</span>
@@ -302,7 +299,7 @@
         </div>
     </div>
 
-    <!-- Modal Konfirmasi Hapus -->
+    <!-- Modal Konfirmasi Hapus Log (Existing) -->
     <div id="confirmDeleteModal" class="fixed inset-0 z-[200] modal-overlay hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
             <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -313,6 +310,21 @@
             <div class="flex gap-3">
                 <button onclick="closeDeleteModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all">Batal</button>
                 <button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 transition-all">Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Hapus Pekerja (NEW REVISI) -->
+    <div id="confirmDeleteWorkerModal" class="fixed inset-0 z-[200] modal-overlay hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
+            <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="8" x2="23" y2="14"/><line x1="23" y1="8" x2="17" y2="14"/></svg>
+            </div>
+            <h3 class="text-lg font-black text-slate-800 mb-2">Hapus Pekerja?</h3>
+            <p class="text-sm text-slate-500 mb-8 leading-relaxed">Apakah anda yakin ingin menghapus pekerja ini?</p>
+            <div class="flex gap-3">
+                <button onclick="window.closeDeleteWorkerModal()" class="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all">Batal</button>
+                <button id="btnConfirmDeleteWorker" class="flex-1 py-3 bg-amber-600 text-white font-black rounded-2xl hover:bg-amber-700 transition-all">Ya, Hapus</button>
             </div>
         </div>
     </div>
@@ -329,8 +341,8 @@
         // ==========================================
         // KONFIGURASI MASTER & KUSTOMISASI
         // ==========================================
-        const MASTER_BOSS_NAME = "Bang Eija"; // <--- UBAH NAMA BOS DI SINI
-        const BOSS_SECRET = "bossque"; 
+        const MASTER_BOSS_NAME = "Bang Eija"; 
+        const BOSS_SECRET = "BOSQUE"; 
         const MASTER_OWNER = "Eija-01";
         const MASTER_REPO = "monitor-desain-dek-dara";
         const RATE = 5000;
@@ -355,6 +367,7 @@
         let ghConfig = JSON.parse(localStorage.getItem('gh_config_simple') || '{"workerName":"","token":"","role":"worker","active":false}');
         let activeLogs = [];
         let logToDelete = null;
+        let workerToDelete = null; // State pekerja yang akan dihapus
         let workerWhitelist = [];
         
         let pendingFileData = null;
@@ -487,11 +500,25 @@
             } catch (e) { showToast("Gagal update cloud.", "error"); }
         };
 
-        window.removeWorkerFromWhitelist = async (name) => {
-            const newList = workerWhitelist.filter(n => n !== name);
+        // Fungsi awal untuk memicu modal hapus pekerja
+        window.removeWorkerFromWhitelist = (name) => {
+            workerToDelete = name;
+            document.getElementById('confirmDeleteWorkerModal').classList.remove('hidden');
+        };
+
+        window.closeDeleteWorkerModal = () => {
+            workerToDelete = null;
+            document.getElementById('confirmDeleteWorkerModal').classList.add('hidden');
+        };
+
+        // Eksekusi penghapusan pekerja setelah konfirmasi modal
+        document.getElementById('btnConfirmDeleteWorker').onclick = async () => {
+            if (!workerToDelete) return;
+            const newList = workerWhitelist.filter(n => n !== workerToDelete);
             try {
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), { names: newList });
                 showToast("Pekerja Dihapus.");
+                window.closeDeleteWorkerModal();
             } catch (e) { showToast("Gagal update cloud.", "error"); }
         };
 
@@ -615,8 +642,6 @@
             reader.onload = () => {
                 pendingFileData = reader.result.split(',')[1];
                 pendingFileExt = file.name.split('.').pop();
-                
-                // Tampilkan Modal Konfirmasi & Preview
                 document.getElementById('uploadPreviewImg').src = reader.result;
                 document.getElementById('uploadConfirmModal').classList.remove('hidden');
                 document.getElementById('inputCustomFileName').value = ""; 
@@ -634,41 +659,30 @@
         window.submitFinalUpload = async () => {
             const customName = document.getElementById('inputCustomFileName').value.trim();
             const btn = document.getElementById('btnSubmitUpload');
-            
             if (!customName) {
                 triggerError('inputCustomFileName');
                 return showToast("Masukkan nama pekerjaan!", "error");
             }
-
-            // --- REVISI: VALIDASI TITLE CASE (Hanya boleh Kapital di awal setiap kata) ---
-            // Regex: Tiap kata dimulai Huruf Besar, sisanya Huruf Kecil/Angka
             const words = customName.split(' ');
             const isTidy = words.every(word => /^[A-Z][a-z0-9]*$/.test(word));
-
             if (!isTidy) {
                 triggerError('inputCustomFileName');
-                return showToast("Ketik Rapi! Gunakan Kapital di awal setiap kata (Contoh: Flyer Design)", "error");
+                return showToast("Gunakan Kapital di awal setiap kata!", "error");
             }
-            // -----------------------------------------------------------------------------
-
             if (!pendingFileData) return;
-
             btn.disabled = true;
             btn.innerText = "Memproses...";
             const progress = document.getElementById('uploadProgress');
             progress.classList.replace('hidden', 'flex');
             document.getElementById('uploadConfirmModal').classList.add('hidden');
-
             try {
                 const cleanName = customName.replace(/\s+/g, '_');
                 const fileName = `${cleanName}_${Date.now()}.${pendingFileExt}`;
-
                 const res = await fetch(`https://api.github.com/repos/${MASTER_OWNER}/${MASTER_REPO}/contents/uploads/${fileName}`, {
                     method: 'PUT',
                     headers: { 'Authorization': `token ${ghConfig.token}`, 'Content-Type': 'application/json' },
                     body: JSON.stringify({ message: `Upload: ${customName} by ${ghConfig.workerName}`, content: pendingFileData })
                 });
-
                 if (res.ok) {
                     const data = await res.json();
                     await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'logs'), {
@@ -697,25 +711,17 @@
         window.openPreview = (logId) => {
             const data = activeLogs.find(l => l.id === logId);
             const isBoss = ghConfig.role === 'boss' && ghConfig.active;
-            
             if(!data) return;
             document.getElementById('modalImage').src = data.imageUrl;
             document.getElementById('modalWorkerName').innerText = data.workerName;
-            
-            // Format Tanggal & Waktu
             const dateObj = new Date(data.timestamp?.toMillis() || data.createdAt);
             document.getElementById('modalDate').innerText = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            
-            // Isi Detail breakdown informasi
             document.getElementById('detailTime').innerText = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             document.getElementById('detailWorker').innerText = data.workerName;
-            
             const gradeVal = data.grade || 'none';
             const gradeLabel = data.grade || 'BELUM DINILAI';
             document.getElementById('detailGradeContainer').innerHTML = `<span class="grade-badge grade-${gradeVal}">${gradeLabel}</span>`;
-
             document.getElementById('gradingArea').classList.toggle('hidden', !isBoss);
-
             if (isBoss) {
                 const grades = [{k:'S',l:'BEST'}, {k:'A',l:'GREAT'}, {k:'B',l:'GOOD'}, {k:'C',l:'FIX'}, {k:'D',l:'REJ'}];
                 document.getElementById('modalGradeButtons').innerHTML = grades.map(g => `
@@ -749,9 +755,7 @@
                 await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'logs', logToDelete));
                 showToast("Data Berhasil Dihapus.");
                 window.closeDeleteModal();
-            } catch (e) {
-                showToast("Gagal menghapus data.", "error");
-            }
+            } catch (e) { showToast("Gagal menghapus data.", "error"); }
         };
 
         window.closeModal = () => document.getElementById('imageModal').classList.add('hidden');
@@ -774,7 +778,7 @@
 
         initAuth();
         updateLoginStatus();
-        toggleRoleUI(); // Inisialisasi UI Role saat pertama kali load
+        toggleRoleUI(); 
     </script>
 </body>
 </html>
