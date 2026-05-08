@@ -221,6 +221,24 @@
                             <p class="text-[10px] font-black text-blue-600 animate-pulse uppercase">Sync Cloud...</p>
                         </div>
                     </label>
+
+                    <!-- REVISI: Info Ketentuan Kualitas & Gaji dipindah ke sini (di bawah panel upload) -->
+                    <div class="mt-4 p-5 bg-blue-50/50 rounded-2xl border border-blue-100 space-y-3">
+                        <p class="text-[11px] font-black text-blue-700 uppercase tracking-wider text-center sm:text-left">Ketentuan Kualitas & Gaji:</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="flex justify-between items-center p-3 px-4 rounded-xl col-span-2 grade-S shadow-lg">
+                                <span class="text-[10px] font-black tracking-widest uppercase">Grade S (Kualitas HD Terbaik)</span>
+                                <span class="text-[12px] font-extrabold">Rp 5.000</span>
+                            </div>
+                            <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[10px] font-black text-emerald-600">Grade A</span><span class="text-[10px] font-bold text-slate-500">Rp 4.000</span></div>
+                            <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[10px] font-black text-blue-600">Grade B</span><span class="text-[10px] font-bold text-slate-500">Rp 3.000</span></div>
+                            <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[10px] font-black text-amber-600">Grade C</span><span class="text-[10px] font-bold text-slate-500">Rp 2.000</span></div>
+                            <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[10px] font-black text-red-600">Grade D</span><span class="text-[10px] font-bold text-slate-500">Rp 1.000</span></div>
+                        </div>
+                        <div class="pt-2 border-t border-blue-100 text-[9px] text-slate-500 font-bold leading-relaxed">
+                            <span class="text-red-500 uppercase tracking-tighter">Note:</span> Desain bisa dihapus Bos jika kurang menarik. Anda dapat upload ulang versi terbaik untuk meningkatkan Grade anda.
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -271,19 +289,6 @@
                     <p class="text-[9px] text-slate-400 mt-2 italic font-bold tracking-tighter normal-case">*Wajib: Gunakan Huruf Kapital di awal setiap kata. Contoh: "Flyer Design"</p>
                 </div>
 
-                <div class="p-5 bg-blue-50/50 rounded-2xl border border-blue-100 space-y-3">
-                    <p class="text-[11px] font-black text-blue-700 uppercase tracking-wider text-center sm:text-left">Ketentuan Kualitas & Gaji:</p>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="flex justify-between items-center p-3 px-4 rounded-xl col-span-2 grade-S shadow-lg">
-                            <span class="text-[10px] font-black tracking-widest uppercase">Grade S (Kualitas HD Terbaik)</span>
-                            <span class="text-[12px] font-extrabold">Rp 5.000</span>
-                        </div>
-                        <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[10px] font-black text-emerald-600">Grade A</span><span class="text-[10px] font-bold text-slate-500">Rp 4.000</span></div>
-                        <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[10px] font-black text-blue-600">Grade B</span><span class="text-[10px] font-bold text-slate-500">Rp 3.000</span></div>
-                        <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[10px] font-black text-amber-600">Grade C</span><span class="text-[10px] font-bold text-slate-500">Rp 2.000</span></div>
-                        <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[10px] font-black text-red-600">Grade D</span><span class="text-[10px] font-bold text-slate-500">Rp 1.000</span></div>
-                    </div>
-                </div>
                 <div class="flex gap-3 pt-2">
                     <button onclick="window.closeUploadConfirm()" class="flex-1 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all">Batal</button>
                     <button id="btnSubmitUpload" onclick="window.submitFinalUpload()" class="flex-1 py-4 bg-blue-600 text-white font-black rounded-2xl active:scale-95 shadow-lg shadow-blue-200">Upload Sekarang</button>
@@ -317,8 +322,17 @@
                         <button id="btnReject" onclick="window.prepareApproval('rejected')" class="py-3 bg-red-600 text-white font-black rounded-xl text-[10px] uppercase">Tolak</button>
                     </div>
                     <div id="approvalForm" class="hidden space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-inner">
-                        <div id="gradeSelector" class="hidden"><label class="text-[10px] font-black text-slate-400 uppercase block mb-2">Pilih Grade:</label><div class="grid grid-cols-5 gap-1" id="approvalGradeButtons"><button onclick="window.selectGrade('S', this)" class="grade-badge grade-S py-3 text-[10px]">S</button><button onclick="window.selectGrade('A', this)" class="grade-badge grade-A py-3 text-[10px]">A</button><button onclick="window.selectGrade('B', this)" class="grade-badge grade-B py-3 text-[10px]">B</button><button onclick="window.selectGrade('C', this)" class="grade-badge grade-C py-3 text-[10px]">C</button><button onclick="window.selectGrade('D', this)" class="grade-badge grade-D py-3 text-[10px]">D</button></div></div>
-                        <textarea id="approvalNote" class="w-full p-3 text-xs border border-slate-200 rounded-xl font-bold outline-none h-20" placeholder="Catatan..."></textarea>
+                        <div id="gradeSelector" class="hidden">
+                            <label class="text-[10px] font-black text-slate-400 uppercase block mb-2">Pilih Grade:</label>
+                            <div class="grid grid-cols-5 gap-1" id="approvalGradeButtons">
+                                <button onclick="window.selectGrade('S', this)" class="grade-badge grade-S py-3 text-[10px] border border-transparent">S</button>
+                                <button onclick="window.selectGrade('A', this)" class="grade-badge grade-A py-3 text-[10px] border border-transparent">A</button>
+                                <button onclick="window.selectGrade('B', this)" class="grade-badge grade-B py-3 text-[10px] border border-transparent">B</button>
+                                <button onclick="window.selectGrade('C', this)" class="grade-badge grade-C py-3 text-[10px] border border-transparent">C</button>
+                                <button onclick="window.selectGrade('D', this)" class="grade-badge grade-D py-3 text-[10px] border border-transparent">D</button>
+                            </div>
+                        </div>
+                        <textarea id="approvalNote" class="w-full p-3 text-xs border border-slate-200 rounded-xl font-bold outline-none h-20" placeholder="Tulis catatan..."></textarea>
                         <button id="btnSubmitFinalDecision" onclick="window.submitApproval()" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl text-[10px] uppercase active:scale-95 transition-all">Kirim</button>
                     </div>
                 </div>
@@ -328,10 +342,10 @@
 
     <!-- Modals Utility -->
     <div id="confirmDeleteWorkerModal" class="fixed inset-0 z-[300] modal-overlay hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800 text-slate-800">Hapus Pekerja?</h3><p class="text-sm text-slate-500 mb-6 leading-relaxed">Apakah anda yakin ingin menghapus pekerja ini?</p><div class="flex gap-3"><button onclick="window.closeDeleteWorkerModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl hover:bg-slate-200">Batal</button><button id="btnConfirmDeleteWorker" class="flex-1 py-3 bg-amber-600 text-white font-black rounded-2xl hover:bg-amber-700 transition-all">Ya, Hapus</button></div></div>
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800">Hapus Pekerja?</h3><p class="text-sm text-slate-500 mb-6 leading-relaxed">Apakah anda yakin ingin menghapus pekerja ini?</p><div class="flex gap-3"><button onclick="window.closeDeleteWorkerModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl hover:bg-slate-200">Batal</button><button id="btnConfirmDeleteWorker" class="flex-1 py-3 bg-amber-600 text-white font-black rounded-2xl hover:bg-amber-700 transition-all">Ya, Hapus</button></div></div>
     </div>
     <div id="confirmDeleteModal" class="fixed inset-0 z-[300] modal-overlay hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800 text-slate-800">Hapus Data?</h3><div class="flex gap-3"><button onclick="window.closeDeleteModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl hover:bg-slate-200">Batal</button><button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 transition-all">Hapus</button></div></div>
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800">Hapus Data?</h3><div class="flex gap-3"><button onclick="window.closeDeleteModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl hover:bg-slate-200">Batal</button><button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 transition-all">Hapus</button></div></div>
     </div>
 
     <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 p-4 rounded-2xl shadow-2xl z-[500] text-[10px] font-black flex transition-all transform translate-y-24 opacity-0 items-center"><span id="toastMessage"></span></div>
@@ -488,7 +502,6 @@
             try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), { names: newList }); showToast("Riwayat dihapus."); window.closeDeleteWorkerModal(); } catch (e) { showToast("Gagal.", "error"); }
         };
 
-        // --- NOTIFIKASI SYSTEM ---
         const updateNotifications = () => {
             if (ghConfig.role !== 'worker' || !ghConfig.active) return;
             const notifs = activeLogs.filter(l => l.workerName === ghConfig.workerName && (l.status === 'approved' || l.status === 'rejected') && (l.reviewedAtMillis || 0) > lastClearedAt);
@@ -514,7 +527,6 @@
 
         window.toggleNotifDropdown = () => document.getElementById('notifDropdown').classList.toggle('hidden');
 
-        // --- APPROVAL LOGIC ---
         window.selectGrade = (grade, element) => {
             window.selectedApprovalGrade = grade;
             document.querySelectorAll('#approvalGradeButtons .grade-badge').forEach(btn => btn.classList.remove('grade-selected'));
@@ -553,7 +565,7 @@
         
         document.getElementById('btnConfirmDelete').onclick = async () => {
             if (!logToDelete) return;
-            try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'logs', logToDelete)); showToast("Pekerjaan dihapus."); window.closeDeleteModal(); } catch (e) { showToast("Gagal hapus.", "error"); }
+            try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'logs', logToDelete)); showToast("Pekerjaan dihapus."); window.closeDeleteModal(); } catch (e) { showToast("Gagal.", "error"); }
         };
 
         window.openPreview = (logId) => {
