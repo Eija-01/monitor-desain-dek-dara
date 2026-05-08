@@ -230,10 +230,15 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, onSnapshot, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // ==========================================
+        // KONFIGURASI MASTER & KUSTOMISASI
+        // ==========================================
+        const MASTER_BOSS_NAME = "Bang Eija"; // <--- KUSTOMISASI NAMA BOS DI SINI
+        const BOSS_SECRET = "BOSQUE"; 
         const MASTER_OWNER = "Eija-01";
         const MASTER_REPO = "monitor-desain-dek-dara";
-        const BOSS_SECRET = "BOSQUE"; 
         const RATE = 5000;
+        // ==========================================
 
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
             apiKey: "AIzaSyBKfSVZsiQwJvZsgKhY8s61ocAXIyvF7Fc",
@@ -445,15 +450,23 @@
 
             if (!name || !token) return showToast("Mohon isi Nama dan Token GitHub.", "error");
             
-            // Animasi loading sederhana
             btn.disabled = true;
             btn.innerHTML = `<span>Mengecek Akses...</span>`;
 
-            if (role === 'boss' && code !== BOSS_SECRET) {
-                triggerError('bossCode');
-                btn.disabled = false;
-                btn.innerHTML = `<span>Login Sistem</span>`;
-                return showToast("Kode Akses Bos Salah!", "error");
+            // Validasi Khusus Bos (Nama dan Kode)
+            if (role === 'boss') {
+                if (name !== MASTER_BOSS_NAME) {
+                    triggerError('workerName');
+                    btn.disabled = false;
+                    btn.innerHTML = `<span>Login Sistem</span>`;
+                    return showToast("Nama Bos tidak terdaftar!", "error");
+                }
+                if (code !== BOSS_SECRET) {
+                    triggerError('bossCode');
+                    btn.disabled = false;
+                    btn.innerHTML = `<span>Login Sistem</span>`;
+                    return showToast("Kode Akses Bos Salah!", "error");
+                }
             }
             
             if (token.length < 30) {
