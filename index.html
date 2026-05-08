@@ -105,8 +105,7 @@
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <!-- ID connectionStatus sekarang mendukung interaksi saat belum login -->
-                <div id="connectionStatus" onclick="window.handleStatusClick()" class="text-[9px] sm:text-xs bg-red-600 text-white border border-red-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter transition-all duration-300">
+                <div id="connectionStatus" onclick="window.handleStatusClick()" class="text-[9px] sm:text-xs bg-red-600 text-white border border-red-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter transition-all duration-300 cursor-pointer hover:bg-red-700 active:scale-95">
                     BELUM LOGIN
                 </div>
                 <button id="logoutBtn" onclick="window.handleLogout()" class="hidden text-[9px] sm:text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full font-bold uppercase transition-all border border-white/20 active:scale-95">
@@ -154,14 +153,16 @@
                 <div id="accessPanelCard" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm transition-all duration-300">
                     <h2 class="text-xs font-black mb-4 text-slate-400 uppercase tracking-widest">Akses Panel</h2>
                     <div id="configContent" class="space-y-4">
-                        <select id="roleSelect" onchange="toggleBossCodeInput()" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none">
+                        <select id="roleSelect" onchange="window.toggleRoleUI()" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none">
                             <option value="worker">PEKERJA</option>
                             <option value="boss">BOS / OWNER</option>
                         </select>
                         <div id="bossCodeArea" class="hidden">
-                            <input type="password" id="bossCode" placeholder="Kode Akses Bos" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-red-50 focus:ring-2 focus:ring-red-500 outline-none font-bold">
+                            <input type="password" id="bossCode" placeholder="Kode Akses Bos" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-red-50 focus:ring-2 focus:ring-red-500 outline-none font-bold transition-all">
                         </div>
-                        <input type="text" id="workerName" placeholder="Nama Anda" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none font-bold transition-all">
+                        <div id="nameInputArea">
+                            <input type="text" id="workerName" placeholder="Nama Anda" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none font-bold transition-all">
+                        </div>
                         <input type="password" id="ghToken" placeholder="Personal Access Token (GitHub)" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none font-bold transition-all">
                         <button id="btnLogin" onclick="saveConfig()" class="w-full bg-slate-900 text-white text-[11px] font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest flex items-center justify-center gap-2">
                             <span>Login Sistem</span>
@@ -211,7 +212,7 @@
 
                 <div class="glass-card rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-6 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
-                        <h2 class="text-lg font-black text-slate-800 tracking-tight">Riwayat Penilaian</h2>
+                        <h2 class="text-lg font-black text-slate-800 tracking-tight">Riwayat Pekerjaan</h2>
                         <span id="badgeMode" class="text-[10px] font-bold px-3 py-1 bg-slate-200 rounded-full text-slate-500 uppercase tracking-widest">-</span>
                     </div>
                     <div class="overflow-x-auto">
@@ -219,9 +220,9 @@
                             <thead class="bg-slate-50 text-slate-400 text-[10px] uppercase font-black tracking-widest border-b">
                                 <tr>
                                     <th class="px-6 py-4">Waktu</th>
-                                    <th class="px-6 py-4">Pekerja</th>
-                                    <th class="px-6 py-4">Grade</th>
-                                    <th class="px-6 py-4 text-right">GAJI</th>
+                                    <th class="px-6 py-4">Nama Pekerja</th>
+                                    <th class="px-6 py-4">Grade Pekerjaan</th>
+                                    <th class="px-6 py-4 text-right">Gaji</th>
                                 </tr>
                             </thead>
                             <tbody id="activityLog" class="divide-y divide-slate-100"></tbody>
@@ -236,13 +237,19 @@
     <div id="uploadConfirmModal" class="fixed inset-0 z-[250] modal-overlay hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
             <h3 class="text-xl font-black text-slate-800 mb-2">Konfirmasi Pekerjaan</h3>
-            <p class="text-sm text-slate-500 mb-6">Masukkan nama hasil pekerjaan Anda sebelum diupload ke sistem.</p>
+            <p class="text-sm text-slate-500 mb-6">Pratinjau hasil kerja Anda sebelum dikirim.</p>
+            
             <div class="space-y-4">
+                <!-- Thumbnail Preview -->
+                <div class="w-full aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 mb-4">
+                    <img id="uploadPreviewImg" src="" class="w-full h-full object-contain">
+                </div>
+
                 <div>
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Nama Pekerjaan/File:</label>
                     <input type="text" id="inputCustomFileName" placeholder="Contoh: Desain_Banner_Promo" class="w-full p-4 text-sm border border-slate-200 rounded-2xl bg-slate-50 outline-none font-bold focus:ring-2 focus:ring-blue-500 transition-all">
                 </div>
-                <div class="flex gap-3">
+                <div class="flex gap-3 pt-2">
                     <button onclick="window.closeUploadConfirm()" class="flex-1 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all">Batal</button>
                     <button id="btnSubmitUpload" onclick="window.submitFinalUpload()" class="flex-1 py-4 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-200">Upload Sekarang</button>
                 </div>
@@ -250,7 +257,7 @@
         </div>
     </div>
 
-    <!-- Modal Preview -->
+    <!-- Modal Preview Gambar (Zoom) dengan Detail Baru -->
     <div id="imageModal" class="fixed inset-0 z-[100] modal-overlay hidden flex items-center justify-center p-4">
         <div class="relative max-w-4xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl">
             <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full z-10">
@@ -261,10 +268,31 @@
                     <img id="modalImage" src="" class="max-h-[70vh] object-contain rounded-xl shadow-lg">
                 </div>
                 <div class="md:w-1/3 p-8 flex flex-col justify-center">
-                    <h3 id="modalWorkerName" class="text-2xl font-black text-slate-800 mb-2">-</h3>
-                    <p id="modalTime" class="text-sm text-slate-400 font-bold mb-8 uppercase tracking-widest">-</p>
-                    <div id="gradingArea" class="hidden">
-                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Penilaian:</label>
+                    <h3 id="modalWorkerName" class="text-2xl font-black text-slate-800 mb-1">-</h3>
+                    <p id="modalDate" class="text-xs text-slate-400 font-bold mb-6 uppercase tracking-widest">-</p>
+                    
+                    <!-- Detail Informasi Breakdown -->
+                    <div class="space-y-4 border-t border-slate-100 pt-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Waktu</span>
+                            <span id="detailTime" class="text-xs font-black text-slate-700">-</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Nama Pekerja</span>
+                            <span id="detailWorker" class="text-xs font-black text-slate-700">-</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Grade</span>
+                            <div id="detailGradeContainer"></div>
+                        </div>
+                        <div class="flex justify-between items-center border-t border-slate-50 pt-4">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Gaji</span>
+                            <span class="text-sm font-black text-green-600 tracking-tight italic">Rp 5.000</span>
+                        </div>
+                    </div>
+
+                    <div id="gradingArea" class="hidden mt-8">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 block border-t border-slate-100 pt-6">Berikan Penilaian:</label>
                         <div class="grid grid-cols-2 gap-2" id="modalGradeButtons"></div>
                     </div>
                 </div>
@@ -299,7 +327,7 @@
         // ==========================================
         // KONFIGURASI MASTER & KUSTOMISASI
         // ==========================================
-        const MASTER_BOSS_NAME = "Bang Eija"; 
+        const MASTER_BOSS_NAME = "Bang Eija"; // <--- UBAH NAMA BOS DI SINI
         const BOSS_SECRET = "BOSQUE"; 
         const MASTER_OWNER = "Eija-01";
         const MASTER_REPO = "monitor-desain-dek-dara";
@@ -375,22 +403,20 @@
             }
         };
 
-        // Fungsi saat indikator status diklik
+        window.toggleRoleUI = () => {
+            const role = document.getElementById('roleSelect').value;
+            document.getElementById('bossCodeArea').classList.toggle('hidden', role !== 'boss');
+            document.getElementById('nameInputArea').classList.toggle('hidden', role === 'boss');
+        };
+
         window.handleStatusClick = () => {
             if (!ghConfig.active) {
                 const card = document.getElementById('accessPanelCard');
                 if (card) {
-                    // Beri efek getar
                     card.classList.add('shake-animate');
                     showToast("Lengkapi data di panel ini untuk login!", "info");
-                    
-                    // Scroll ke card jika di mobile
                     card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-
-                    // Hapus class getar setelah animasi selesai agar bisa diulang
-                    setTimeout(() => {
-                        card.classList.remove('shake-animate');
-                    }, 500);
+                    setTimeout(() => card.classList.remove('shake-animate'), 500);
                 }
             }
         };
@@ -514,47 +540,39 @@
                 ` : `<span class="text-xs font-black text-green-600 tracking-tighter">+Rp 5.000</span>`;
 
                 return `
-                    <tr class="hover:bg-slate-50 transition-all">
+                    <tr class="hover:bg-slate-50 transition-all cursor-pointer" onclick="window.openPreview('${log.id}')">
                         <td class="px-6 py-4 text-[10px] text-slate-400 font-bold uppercase">${timeStr}</td>
                         <td class="px-6 py-4 text-xs font-black text-slate-800">${log.workerName}</td>
-                        <td class="px-6 py-4">${gradeControl}</td>
-                        <td class="px-6 py-4 text-right">${actionControl}</td>
+                        <td class="px-6 py-4" onclick="event.stopPropagation()">${gradeControl}</td>
+                        <td class="px-6 py-4 text-right" onclick="event.stopPropagation()">${actionControl}</td>
                     </tr>
                 `;
             }).join('');
         };
 
-        window.toggleBossCodeInput = () => {
-            document.getElementById('bossCodeArea').classList.toggle('hidden', document.getElementById('roleSelect').value !== 'boss');
-        };
-
         window.saveConfig = async () => {
             const role = document.getElementById('roleSelect').value;
             const code = document.getElementById('bossCode').value;
-            const name = document.getElementById('workerName').value.trim();
+            const nameInput = document.getElementById('workerName').value.trim();
             const token = document.getElementById('ghToken').value.trim();
             const btn = document.getElementById('btnLogin');
 
-            if (!name || !token) return showToast("Mohon isi Nama dan Token GitHub.", "error");
+            let finalName = nameInput;
+
+            if (role === 'boss') {
+                finalName = MASTER_BOSS_NAME; 
+                if (!code || !token) return showToast("Masukkan Kode Akses & Token!", "error");
+                if (code !== BOSS_SECRET) {
+                    triggerError('bossCode');
+                    return showToast("Kode Akses Bos Salah!", "error");
+                }
+            } else {
+                if (!nameInput || !token) return showToast("Mohon isi Nama dan Token GitHub.", "error");
+            }
             
             btn.disabled = true;
             btn.innerHTML = `<span>Mengecek Akses...</span>`;
 
-            if (role === 'boss') {
-                if (name !== MASTER_BOSS_NAME) {
-                    triggerError('workerName');
-                    btn.disabled = false;
-                    btn.innerHTML = `<span>Login Sistem</span>`;
-                    return showToast("Nama Bos tidak terdaftar!", "error");
-                }
-                if (code !== BOSS_SECRET) {
-                    triggerError('bossCode');
-                    btn.disabled = false;
-                    btn.innerHTML = `<span>Login Sistem</span>`;
-                    return showToast("Kode Akses Bos Salah!", "error");
-                }
-            }
-            
             if (token.length < 30) {
                 triggerError('ghToken');
                 btn.disabled = false;
@@ -567,7 +585,7 @@
                     const docSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'));
                     const allowedNames = docSnap.exists() ? docSnap.data().names || [] : [];
                     
-                    if (!allowedNames.includes(name)) {
+                    if (!allowedNames.includes(finalName)) {
                         triggerError('workerName');
                         btn.disabled = false;
                         btn.innerHTML = `<span>Login Sistem</span>`;
@@ -580,9 +598,9 @@
                 }
             }
 
-            ghConfig = { workerName: name, token: token, role: role, active: true };
+            ghConfig = { workerName: finalName, token: token, role: role, active: true };
             localStorage.setItem('gh_config_simple', JSON.stringify(ghConfig));
-            showToast(`Halo ${name}! Akses Berhasil.`);
+            showToast(`Halo ${finalName}! Akses Berhasil.`);
             setTimeout(() => location.reload(), 1000);
         };
 
@@ -596,6 +614,7 @@
                 pendingFileData = reader.result.split(',')[1];
                 pendingFileExt = file.name.split('.').pop();
                 
+                document.getElementById('uploadPreviewImg').src = reader.result;
                 document.getElementById('uploadConfirmModal').classList.remove('hidden');
                 document.getElementById('inputCustomFileName').value = ""; 
                 document.getElementById('inputCustomFileName').focus();
@@ -668,7 +687,19 @@
             if(!data) return;
             document.getElementById('modalImage').src = data.imageUrl;
             document.getElementById('modalWorkerName').innerText = data.workerName;
-            document.getElementById('modalTime').innerText = new Date(data.timestamp?.toMillis() || data.createdAt).toLocaleString('id-ID');
+            
+            // Format Tanggal & Waktu
+            const dateObj = new Date(data.timestamp?.toMillis() || data.createdAt);
+            document.getElementById('modalDate').innerText = dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            
+            // Isi Detail breakdown informasi
+            document.getElementById('detailTime').innerText = dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            document.getElementById('detailWorker').innerText = data.workerName;
+            
+            const gradeVal = data.grade || 'none';
+            const gradeLabel = data.grade || 'BELUM DINILAI';
+            document.getElementById('detailGradeContainer').innerHTML = `<span class="grade-badge grade-${gradeVal}">${gradeLabel}</span>`;
+
             document.getElementById('gradingArea').classList.toggle('hidden', !isBoss);
 
             if (isBoss) {
@@ -729,6 +760,7 @@
 
         initAuth();
         updateLoginStatus();
+        toggleRoleUI(); // Inisialisasi UI Role saat pertama kali load
     </script>
 </body>
 </html>
