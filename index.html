@@ -59,7 +59,7 @@
             </div>
             <div class="flex items-center gap-3">
                 <div id="connectionStatus" class="text-[9px] sm:text-xs bg-red-600 text-white border border-red-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter transition-all duration-300">
-                    BELUM LOGIN 🔴
+                    BELUM LOGIN
                 </div>
                 <button id="logoutBtn" onclick="window.handleLogout()" class="hidden text-[9px] sm:text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full font-bold uppercase transition-all border border-white/20 active:scale-95">
                     LOGOUT
@@ -102,8 +102,8 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div class="lg:col-span-4 space-y-6">
-                <!-- Akses Panel -->
-                <div class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <!-- Akses Panel (Akan disembunyikan saat login) -->
+                <div id="accessPanelCard" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm">
                     <h2 class="text-xs font-black mb-4 text-slate-400 uppercase tracking-widest">Akses Panel</h2>
                     <div id="configContent" class="space-y-4">
                         <select id="roleSelect" onchange="toggleBossCodeInput()" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none">
@@ -116,10 +116,6 @@
                         <input type="text" id="workerName" placeholder="Nama Anda" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none font-bold">
                         <input type="password" id="ghToken" placeholder="Personal Access Token (GitHub)" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none font-bold">
                         <button onclick="saveConfig()" class="w-full bg-slate-900 text-white text-[11px] font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest">Login</button>
-                    </div>
-                    <div id="configLocked" class="hidden py-6 text-center bg-blue-600 rounded-3xl cursor-pointer" onclick="toggleConfig()">
-                        <p class="text-[11px] text-white font-black uppercase tracking-widest">SISTEM AKTIF</p>
-                        <p id="lockRoleText" class="text-[8px] text-blue-200 font-bold uppercase mt-1">Role: -</p>
                     </div>
                 </div>
 
@@ -256,19 +252,25 @@
         const updateLoginStatus = () => {
             const status = document.getElementById('connectionStatus');
             const logoutBtn = document.getElementById('logoutBtn');
+            const accessPanelCard = document.getElementById('accessPanelCard');
             const pulse = document.getElementById('syncPulse');
             const syncText = document.getElementById('syncStatusText');
 
             if (ghConfig.active) {
-                status.innerText = "LOGIN 🟢";
+                const roleLabel = ghConfig.role === 'boss' ? 'BOSS ROLE' : 'WORKER ROLE';
+                status.innerText = roleLabel; 
                 status.className = "text-[9px] sm:text-xs bg-green-600 text-white border border-green-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter transition-all duration-300";
+                
                 logoutBtn.classList.remove('hidden');
+                accessPanelCard.classList.add('hidden'); 
                 pulse.className = "w-2 h-2 rounded-full bg-green-500 animate-pulse transition-all";
                 syncText.innerText = "Terhubung Cloud";
             } else {
-                status.innerText = "BELUM LOGIN 🔴";
+                status.innerText = "BELUM LOGIN"; 
                 status.className = "text-[9px] sm:text-xs bg-red-600 text-white border border-red-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter transition-all duration-300";
+                
                 logoutBtn.classList.add('hidden');
+                accessPanelCard.classList.remove('hidden'); 
                 pulse.className = "w-2 h-2 rounded-full bg-red-500 transition-all";
                 syncText.innerText = "Offline";
             }
@@ -306,7 +308,6 @@
             document.getElementById('totalEarnings').innerText = (activeLogs.length * RATE).toLocaleString('id-ID');
             document.getElementById('displayWorkerNameTop').innerText = ghConfig.workerName || "Tamu";
             document.getElementById('roleTitle').innerText = isBoss ? "DASHBOARD BOS" : (isWorker ? "DASHBOARD PEKERJA" : "MASUKKAN AKSES");
-            document.getElementById('lockRoleText').innerText = `Role: ${ghConfig.role?.toUpperCase() || '-'}`;
             document.getElementById('badgeMode').innerText = isBoss ? "Mode Penilaian" : "Mode Lihat";
             
             document.getElementById('uploadCard').classList.toggle('hidden', !isWorker);
@@ -370,7 +371,7 @@
             if (!name || !token) return showToast("Mohon isi Nama dan Token GitHub.", "error");
             if (role === 'boss' && code !== BOSS_SECRET) {
                 triggerError('bossCode');
-                return showToast("Kode Bos Salah!", "error");
+                return showToast("Kode Akses Bos Salah!", "error");
             }
             
             if (token.length < 30) {
@@ -471,14 +472,13 @@
         };
 
         window.closeModal = () => document.getElementById('imageModal').classList.add('hidden');
-        window.toggleConfig = () => {
-            document.getElementById('configContent').classList.remove('hidden');
-            document.getElementById('configLocked').classList.add('hidden');
-        };
 
         const triggerError = (id) => {
-            document.getElementById(id).classList.add('error-animate');
-            setTimeout(() => document.getElementById(id).classList.remove('error-animate'), 600);
+            const el = document.getElementById(id);
+            if(el) {
+                el.classList.add('error-animate');
+                setTimeout(() => el.classList.remove('error-animate'), 600);
+            }
         };
 
         const showToast = (msg, type = 'success') => {
@@ -488,11 +488,6 @@
             toast.classList.remove('translate-y-24', 'opacity-0');
             setTimeout(() => toast.classList.add('translate-y-24', 'opacity-0'), 3000);
         };
-
-        if (ghConfig.active) {
-            document.getElementById('configContent').classList.add('hidden');
-            document.getElementById('configLocked').classList.remove('hidden');
-        }
 
         initAuth();
         updateLoginStatus();
