@@ -49,8 +49,6 @@
             border: none;
             box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
             animation: shine-effect 3s linear infinite;
-            position: relative;
-            overflow: hidden !important;
         }
         @keyframes shine-effect {
             0% { background-position: 0% 50%; }
@@ -67,7 +65,6 @@
         }
         @keyframes sweep { 0% { left: -150%; } 30% { left: 150%; } 100% { left: 150%; } }
 
-        /* Penanda tombol grade yang dipilih Bos */
         .grade-selected {
             box-shadow: 0 0 0 3px #ffffff, 0 0 0 6px #3b82f6 !important;
             transform: scale(1.1) translateY(-2px);
@@ -185,19 +182,19 @@
                 <div id="loginSection" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm transition-all duration-300">
                     <h2 class="text-xs font-black mb-4 text-slate-400 uppercase tracking-widest">Akses Panel</h2>
                     <div class="space-y-4">
-                        <select id="roleSelect" onchange="window.toggleRoleUI()" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none">
+                        <select id="roleSelect" onchange="window.toggleRoleUI()" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none text-slate-600">
                             <option value="worker">PEKERJA</option>
                             <option value="boss">BOS / OWNER</option>
                         </select>
                         <div id="bossCodeArea" class="hidden"><input type="password" id="bossCode" placeholder="Kode Akses Bos" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-red-50 font-bold outline-none"></div>
                         <div id="nameInputArea"><input type="text" id="workerName" placeholder="Nama Anda" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none"></div>
                         <input type="password" id="ghToken" placeholder="Personal Access Token (GitHub)" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none">
-                        <button id="btnLogin" onclick="saveConfig()" class="w-full bg-slate-900 text-white text-[11px] font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest">Login Sistem</button>
+                        <button id="btnLogin" onclick="window.saveConfig()" class="w-full bg-slate-900 text-white text-[11px] font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest">Login Sistem</button>
                     </div>
                 </div>
 
                 <!-- Whitelist (Bos Only) -->
-                <div id="workerManagerCard" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm hidden">
+                <div id="workerManagerCard" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm hidden transition-all">
                     <h2 class="text-xs font-black mb-4 text-slate-400 uppercase tracking-widest">Daftar Pekerja Aktif</h2>
                     <div class="space-y-3">
                         <div class="flex gap-2">
@@ -209,7 +206,7 @@
                 </div>
 
                 <!-- Upload (Worker Only) -->
-                <div id="uploadCard" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm hidden">
+                <div id="uploadCard" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm hidden transition-all">
                     <h2 class="text-xs font-black mb-4 text-slate-400 uppercase tracking-widest">Upload Pekerjaan</h2>
                     <label class="group relative flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-slate-200 rounded-3xl hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer bg-slate-50">
                         <div class="flex flex-col items-center py-4 text-center">
@@ -218,7 +215,7 @@
                             </div>
                             <p class="text-xs text-slate-600 font-extrabold group-hover:text-blue-700">Upload Hasil Desain</p>
                         </div>
-                        <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="handleFileUpload(event)">
+                        <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="window.handleFileUpload(event)">
                         <div id="uploadProgress" class="absolute inset-0 bg-white/95 hidden items-center justify-center flex-col gap-3 rounded-3xl z-10">
                             <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
                             <p class="text-[10px] font-black text-blue-600 animate-pulse uppercase">Sync Cloud...</p>
@@ -234,7 +231,7 @@
                     <div id="galleryEmpty" class="py-12 text-center text-slate-400 italic text-xs font-medium">Belum ada desain diunggah.</div>
                 </div>
 
-                <!-- Panel Riwayat (Revisi: Ditambahkan id historyPanel agar bisa disembunyikan di mode tamu) -->
+                <!-- Panel Riwayat -->
                 <div id="historyPanel" class="glass-card rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-5 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
                         <h2 class="text-lg font-black text-slate-800 tracking-tight">Riwayat Penilaian</h2>
@@ -262,9 +259,10 @@
     <div id="uploadConfirmModal" class="fixed inset-0 z-[250] modal-overlay hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl overflow-y-auto max-h-[95vh]">
             <h3 class="text-xl font-black text-slate-800 mb-1">Konfirmasi Pekerjaan</h3>
-            <p class="text-sm text-slate-500 mb-6 font-bold italic">Pratinjau hasil kerja Anda sebelum dikirim.</p>
+            <p class="text-sm text-slate-500 mb-6 font-bold italic text-center sm:text-left">Pratinjau hasil kerja Anda sebelum dikirim.</p>
+            
             <div class="space-y-4">
-                <div class="w-full aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 mb-4">
+                <div class="w-full aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 mb-4 shadow-inner">
                     <img id="uploadPreviewImg" src="" class="w-full h-full object-contain">
                 </div>
                 <div>
@@ -272,6 +270,7 @@
                     <input type="text" id="inputCustomFileName" placeholder="Contoh: Desain Banner Promo" class="w-full p-4 text-sm border border-slate-200 rounded-xl bg-slate-50 outline-none font-bold focus:ring-2 focus:ring-blue-500 transition-all">
                     <p class="text-[9px] text-slate-400 mt-2 italic font-bold tracking-tighter normal-case">*Wajib: Gunakan Huruf Kapital di awal setiap kata. Contoh: "Flyer Design"</p>
                 </div>
+
                 <div class="p-5 bg-blue-50/50 rounded-2xl border border-blue-100 space-y-3">
                     <p class="text-[11px] font-black text-blue-700 uppercase tracking-wider text-center sm:text-left">Ketentuan Kualitas & Gaji:</p>
                     <div class="grid grid-cols-2 gap-2">
@@ -296,7 +295,7 @@
     <!-- Modal Detail & Approval -->
     <div id="imageModal" class="fixed inset-0 z-[100] modal-overlay hidden flex items-center justify-center p-2 sm:p-4">
         <div class="relative max-w-4xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[95vh]">
-            <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full z-10 transition-transform active:scale-90">
+            <button onclick="window.closeModal()" class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full z-10 transition-transform active:scale-90">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
             <div class="md:w-2/3 bg-slate-100 flex items-center justify-center p-4">
@@ -314,21 +313,12 @@
                 </div>
                 <div id="approvalActionsArea" class="hidden mt-8 border-t border-slate-100 pt-6 space-y-4">
                     <div class="grid grid-cols-2 gap-3">
-                        <button id="btnApprove" onclick="window.prepareApproval('approved')" class="py-3 bg-green-600 text-white font-black rounded-xl text-[10px] uppercase transition-all">Setujui</button>
-                        <button id="btnReject" onclick="window.prepareApproval('rejected')" class="py-3 bg-red-600 text-white font-black rounded-xl text-[10px] uppercase transition-all">Tolak</button>
+                        <button id="btnApprove" onclick="window.prepareApproval('approved')" class="py-3 bg-green-600 text-white font-black rounded-xl text-[10px] uppercase">Setujui</button>
+                        <button id="btnReject" onclick="window.prepareApproval('rejected')" class="py-3 bg-red-600 text-white font-black rounded-xl text-[10px] uppercase">Tolak</button>
                     </div>
                     <div id="approvalForm" class="hidden space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-inner">
-                        <div id="gradeSelector" class="hidden">
-                            <label class="text-[10px] font-black text-slate-400 uppercase block mb-2">Pilih Grade:</label>
-                            <div class="grid grid-cols-5 gap-1" id="approvalGradeButtons">
-                                <button onclick="window.selectGrade('S', this)" class="grade-badge grade-S py-3 text-[10px] border border-transparent">S</button>
-                                <button onclick="window.selectGrade('A', this)" class="grade-badge grade-A py-3 text-[10px] border border-transparent">A</button>
-                                <button onclick="window.selectGrade('B', this)" class="grade-badge grade-B py-3 text-[10px] border border-transparent">B</button>
-                                <button onclick="window.selectGrade('C', this)" class="grade-badge grade-C py-3 text-[10px] border border-transparent">C</button>
-                                <button onclick="window.selectGrade('D', this)" class="grade-badge grade-D py-3 text-[10px] border border-transparent">D</button>
-                            </div>
-                        </div>
-                        <textarea id="approvalNote" class="w-full p-3 text-xs border border-slate-200 rounded-xl font-bold outline-none h-20" placeholder="Tulis catatan..."></textarea>
+                        <div id="gradeSelector" class="hidden"><label class="text-[10px] font-black text-slate-400 uppercase block mb-2">Pilih Grade:</label><div class="grid grid-cols-5 gap-1" id="approvalGradeButtons"><button onclick="window.selectGrade('S', this)" class="grade-badge grade-S py-3 text-[10px]">S</button><button onclick="window.selectGrade('A', this)" class="grade-badge grade-A py-3 text-[10px]">A</button><button onclick="window.selectGrade('B', this)" class="grade-badge grade-B py-3 text-[10px]">B</button><button onclick="window.selectGrade('C', this)" class="grade-badge grade-C py-3 text-[10px]">C</button><button onclick="window.selectGrade('D', this)" class="grade-badge grade-D py-3 text-[10px]">D</button></div></div>
+                        <textarea id="approvalNote" class="w-full p-3 text-xs border border-slate-200 rounded-xl font-bold outline-none h-20" placeholder="Catatan..."></textarea>
                         <button id="btnSubmitFinalDecision" onclick="window.submitApproval()" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl text-[10px] uppercase active:scale-95 transition-all">Kirim</button>
                     </div>
                 </div>
@@ -338,10 +328,10 @@
 
     <!-- Modals Utility -->
     <div id="confirmDeleteWorkerModal" class="fixed inset-0 z-[300] modal-overlay hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800">Hapus Pekerja?</h3><p class="text-sm text-slate-500 mb-6 leading-relaxed">Apakah anda yakin ingin menghapus pekerja ini?</p><div class="flex gap-3"><button onclick="window.closeDeleteWorkerModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl hover:bg-slate-200">Batal</button><button id="btnConfirmDeleteWorker" class="flex-1 py-3 bg-amber-600 text-white font-black rounded-2xl hover:bg-amber-700 transition-all">Ya, Hapus</button></div></div>
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800 text-slate-800">Hapus Pekerja?</h3><p class="text-sm text-slate-500 mb-6 leading-relaxed">Apakah anda yakin ingin menghapus pekerja ini?</p><div class="flex gap-3"><button onclick="window.closeDeleteWorkerModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl hover:bg-slate-200">Batal</button><button id="btnConfirmDeleteWorker" class="flex-1 py-3 bg-amber-600 text-white font-black rounded-2xl hover:bg-amber-700 transition-all">Ya, Hapus</button></div></div>
     </div>
     <div id="confirmDeleteModal" class="fixed inset-0 z-[300] modal-overlay hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800">Hapus Data?</h3><p class="text-sm text-slate-500 mb-8">Tindakan ini tidak bisa dibatalkan.</p><div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl hover:bg-slate-200">Batal</button><button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 transition-all">Hapus</button></div></div>
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800 text-slate-800">Hapus Data?</h3><div class="flex gap-3"><button onclick="window.closeDeleteModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl hover:bg-slate-200">Batal</button><button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 transition-all">Hapus</button></div></div>
     </div>
 
     <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 p-4 rounded-2xl shadow-2xl z-[500] text-[10px] font-black flex transition-all transform translate-y-24 opacity-0 items-center"><span id="toastMessage"></span></div>
@@ -375,8 +365,8 @@
         let ghConfig = JSON.parse(localStorage.getItem('gh_config_simple') || '{"workerName":"","token":"","role":"worker","active":false}');
         let activeLogs = [];
         let workerWhitelist = [];
-        let logToDelete = null;
         let workerToDelete = null;
+        let logToDelete = null;
         let lastClearedAt = parseInt(localStorage.getItem('notif_cleared_at') || '0');
 
         window.selectedApprovalId = null;
@@ -418,7 +408,6 @@
                 guestLoginBtn.classList.add('hidden');
                 loginSection.classList.add('hidden'); 
                 
-                // REVISI: Tampilkan history panel jika login
                 if (historyPanel) historyPanel.classList.remove('hidden');
                 
                 if (earningsCard) earningsCard.classList.toggle('hidden', ghConfig.role !== 'worker');
@@ -436,7 +425,6 @@
                 guestLoginBtn.classList.remove('hidden');
                 loginSection.classList.remove('hidden'); 
                 
-                // REVISI: Sembunyikan riwayat di mode tamu
                 if (historyPanel) historyPanel.classList.add('hidden');
                 
                 if (earningsCard) earningsCard.classList.add('hidden');
@@ -500,7 +488,7 @@
             try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), { names: newList }); showToast("Riwayat dihapus."); window.closeDeleteWorkerModal(); } catch (e) { showToast("Gagal.", "error"); }
         };
 
-        // --- NOTIFIKASI SYSTEM (PERSISTENCE) ---
+        // --- NOTIFIKASI SYSTEM ---
         const updateNotifications = () => {
             if (ghConfig.role !== 'worker' || !ghConfig.active) return;
             const notifs = activeLogs.filter(l => l.workerName === ghConfig.workerName && (l.status === 'approved' || l.status === 'rejected') && (l.reviewedAtMillis || 0) > lastClearedAt);
@@ -568,6 +556,42 @@
             try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'logs', logToDelete)); showToast("Pekerjaan dihapus."); window.closeDeleteModal(); } catch (e) { showToast("Gagal hapus.", "error"); }
         };
 
+        window.openPreview = (logId) => {
+            const data = activeLogs.find(l => l.id === logId);
+            const isB = ghConfig.role === 'boss' && ghConfig.active;
+            if(!data) return;
+            window.selectedApprovalId = data.id;
+            const modalImg = document.getElementById('modalImage');
+            const modalWork = document.getElementById('modalWorkerName');
+            const modalDt = document.getElementById('modalDate');
+            if (modalImg) modalImg.src = data.imageUrl;
+            if (modalWork) modalWork.innerText = data.fileName || data.workerName;
+            if (modalDt) modalDt.innerText = new Date(data.timestamp?.toMillis() || data.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            
+            document.getElementById('approvalForm').classList.add('hidden');
+            document.getElementById('approvalActionsArea').classList.add('hidden');
+            document.getElementById('detailGradeArea').classList.add('hidden');
+            document.getElementById('bossNoteArea').classList.add('hidden');
+            
+            const detailWorker = document.getElementById('detailWorker');
+            if (detailWorker) detailWorker.innerText = data.workerName;
+
+            const getP = (g) => ({ S: 5000, A: 4000, B: 3000, C: 2000, D: 1000 }[g] || 0);
+            const detailEarnings = document.getElementById('detailEarnings');
+            if (detailEarnings) detailEarnings.innerText = `Rp ${getP(data.grade).toLocaleString('id-ID')}`;
+            
+            const badge = document.getElementById('detailStatusBadge');
+            if (badge) {
+                if (data.status === 'approved') { badge.innerHTML = `<span class="grade-badge grade-${data.grade}">DISETUJUI</span>`; document.getElementById('detailGradeArea').classList.remove('hidden'); document.getElementById('detailGradeContainer').innerHTML = `<span class="grade-badge grade-${data.grade}">${data.grade}</span>`; }
+                else if (data.status === 'rejected') { badge.innerHTML = `<span class="grade-badge grade-rejected">DITOLAK</span>`; }
+                else { badge.innerHTML = `<span class="grade-badge grade-pending">PENDING</span>`; if (isB) document.getElementById('approvalActionsArea').classList.remove('hidden'); }
+            }
+            if (data.bossNote) { document.getElementById('bossNoteArea').classList.remove('hidden'); document.getElementById('detailBossNote').innerText = data.bossNote; }
+            document.getElementById('imageModal').classList.remove('hidden');
+        };
+
+        window.closeModal = () => document.getElementById('imageModal').classList.add('hidden');
+
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             if (user) { subscribeToCloud(); subscribeToWhitelist(); loadClearedAt(); }
@@ -623,39 +647,9 @@
             }
         };
 
-        window.openPreview = (logId) => {
-            const data = activeLogs.find(l => l.id === logId);
-            const isB = ghConfig.role === 'boss' && ghConfig.active;
-            if(!data) return;
-            window.selectedApprovalId = data.id;
-            const modalImg = document.getElementById('modalImage');
-            const modalWork = document.getElementById('modalWorkerName');
-            const modalDt = document.getElementById('modalDate');
-            if (modalImg) modalImg.src = data.imageUrl;
-            if (modalWork) modalWork.innerText = data.fileName || data.workerName;
-            if (modalDt) modalDt.innerText = new Date(data.timestamp?.toMillis() || data.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            
-            document.getElementById('approvalForm').classList.add('hidden');
-            document.getElementById('approvalActionsArea').classList.add('hidden');
-            document.getElementById('detailGradeArea').classList.add('hidden');
-            document.getElementById('bossNoteArea').classList.add('hidden');
-            
-            const detailWorker = document.getElementById('detailWorker');
-            if (detailWorker) detailWorker.innerText = data.workerName;
-
-            const getP = (g) => ({ S: 5000, A: 4000, B: 3000, C: 2000, D: 1000 }[g] || 0);
-            const detailEarnings = document.getElementById('detailEarnings');
-            if (detailEarnings) detailEarnings.innerText = `Rp ${getP(data.grade).toLocaleString('id-ID')}`;
-            
-            const badge = document.getElementById('detailStatusBadge');
-            if (badge) {
-                if (data.status === 'approved') { badge.innerHTML = `<span class="grade-badge grade-${data.grade}">DISETUJUI</span>`; document.getElementById('detailGradeArea').classList.remove('hidden'); document.getElementById('detailGradeContainer').innerHTML = `<span class="grade-badge grade-${data.grade}">${data.grade}</span>`; }
-                else if (data.status === 'rejected') { badge.innerHTML = `<span class="grade-badge grade-rejected">DITOLAK</span>`; }
-                else { badge.innerHTML = `<span class="grade-badge grade-pending">PENDING</span>`; if (isB) document.getElementById('approvalActionsArea').classList.remove('hidden'); }
-            }
-            if (data.bossNote) { document.getElementById('bossNoteArea').classList.remove('hidden'); document.getElementById('detailBossNote').innerText = data.bossNote; }
-            document.getElementById('imageModal').classList.remove('hidden');
-        };
+        window.handleLogout = () => { localStorage.removeItem('gh_config_simple'); location.reload(); };
+        window.closeUploadConfirm = () => document.getElementById('uploadConfirmModal').classList.add('hidden');
+        window.toggleRoleUI = () => { const r = document.getElementById('roleSelect').value; document.getElementById('bossCodeArea').classList.toggle('hidden', r !== 'boss'); document.getElementById('nameInputArea').classList.toggle('hidden', r === 'boss'); };
 
         window.saveConfig = async () => {
             const r = document.getElementById('roleSelect').value;
