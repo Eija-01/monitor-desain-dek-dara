@@ -183,7 +183,7 @@
                         <div id="bossCodeArea" class="hidden"><input type="password" id="bossCode" placeholder="Kode Akses Bos" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-red-50 font-bold outline-none text-slate-600 transition-all border-slate-200"></div>
                         <div id="nameInputArea"><input type="text" id="workerName" placeholder="Nama Anda" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none text-slate-600 transition-all border-slate-200"></div>
                         <input type="password" id="ghToken" placeholder="Personal Access Token (GitHub)" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none text-slate-600 transition-all border-slate-200">
-                        <button id="btnLogin" onclick="window.saveConfig()" class="w-full bg-slate-900 text-white text-[11px] font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest">Login Sistem</button>
+                        <button id="btnLogin" onclick="window.saveConfig()" class="w-full bg-slate-900 text-white text-[11px] font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest">Login</button>
                     </div>
                 </div>
 
@@ -247,7 +247,7 @@
                 <!-- Panel Riwayat -->
                 <div id="historyPanel" class="glass-card rounded-3xl shadow-sm border border-slate-200 overflow-hidden hidden">
                     <div class="p-5 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
-                        <h2 class="text-lg font-black text-slate-800 tracking-tight">Riwayat Penilaian</h2>
+                        <h2 class="text-lg font-black text-slate-800 tracking-tight">Riwayat Proyek</h2>
                         <span id="badgeMode" class="text-[10px] font-black px-3 py-1 bg-slate-200 rounded-full text-slate-500 uppercase tracking-widest">-</span>
                     </div>
                     <div class="overflow-x-auto">
@@ -255,7 +255,7 @@
                             <thead class="bg-slate-50 text-slate-400 text-[10px] uppercase font-black tracking-widest border-b">
                                 <tr>
                                     <th class="px-6 py-4">Waktu</th>
-                                    <th class="px-6 py-4">Pekerja</th>
+                                    <th class="px-6 py-4">Nama Pekerja</th>
                                     <th class="px-6 py-4 text-center">Status & Grade</th>
                                     <th class="px-6 py-4 text-right">Gaji</th>
                                 </tr>
@@ -585,7 +585,7 @@
             if (displayWorkerNameTopEl) displayWorkerNameTopEl.innerText = ghConfig.active ? ghConfig.workerName : "Tamu";
             
             const badgeModeEl = document.getElementById('badgeMode');
-            if (badgeModeEl) badgeModeEl.innerText = isB ? "Mode Monitor & Approval" : "Mode Riwayat Kerja";
+            if (badgeModeEl) badgeModeEl.innerText = isB ? "Mode Editor" : "Submitted";
 
             const gal = document.getElementById('galleryContainer');
             if (gal) {
@@ -670,7 +670,7 @@
             }
             if (!t.startsWith('ghp_') || t.length < 40) {
                 triggerFail('ghToken');
-                return showToast("Token tidak valid! (Wajib 'ghp_' & min 40 karakter)", "error");
+                return showToast("Token tidak valid!", "error");
             }
 
             if (r === 'worker') { 
