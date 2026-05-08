@@ -41,12 +41,13 @@
             overflow: hidden;
         }
 
+        /* Grade S Shimmering & Luxury */
         .grade-S { 
             background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #10b981 100%);
             background-size: 200% auto;
             color: white; 
             border: none;
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
             animation: shine-effect 3s linear infinite;
         }
         @keyframes shine-effect {
@@ -101,8 +102,7 @@
                     </button>
                     <div id="notifDropdown" class="absolute right-0 mt-4 w-72 bg-white rounded-2xl shadow-2xl border border-slate-100 hidden overflow-hidden z-[60]">
                         <div class="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                            <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Notifikasi Baru</h4>
-                            <button onclick="window.markAllRead()" class="text-[9px] font-bold text-blue-600">Hapus Semua</button>
+                            <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Notifikasi</h4>
                         </div>
                         <div id="notifList" class="max-h-80 overflow-y-auto divide-y divide-slate-50"></div>
                     </div>
@@ -232,7 +232,7 @@
         </div>
     </main>
 
-    <!-- Modal Konfirmasi Upload (UPDATE: Grade S Shimmer & Grid D) -->
+    <!-- Modal Konfirmasi Upload -->
     <div id="uploadConfirmModal" class="fixed inset-0 z-[250] modal-overlay hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl overflow-y-auto max-h-[90vh]">
             <h3 class="text-xl font-black text-slate-800 mb-2">Konfirmasi Pekerjaan</h3>
@@ -313,6 +313,7 @@
                         <div id="bossNoteArea" class="hidden pt-4 border-t border-slate-100"><label class="text-[10px] font-black text-blue-600 uppercase block mb-1">Catatan Bos:</label><p id="detailBossNote" class="text-xs font-bold text-slate-500 italic bg-slate-50 p-3 rounded-xl border border-slate-100"></p></div>
                     </div>
 
+                    <!-- Mode Persetujuan -->
                     <div id="approvalActionsArea" class="hidden mt-8 border-t border-slate-100 pt-6 space-y-4">
                         <div class="grid grid-cols-2 gap-3">
                             <button id="btnApprove" onclick="window.prepareApproval('approve')" class="py-3 bg-green-600 text-white font-black rounded-xl text-xs uppercase transition-all">Setujui</button>
@@ -322,11 +323,11 @@
                             <div id="gradeSelector" class="hidden">
                                 <label class="text-[10px] font-black text-slate-400 uppercase block mb-2">Pilih Grade:</label>
                                 <div class="grid grid-cols-5 gap-2">
-                                    <button onclick="window.selectedApprovalGrade = 'S'" class="grade-badge grade-S py-3 text-[10px] focus:ring-4 ring-green-200">S</button>
-                                    <button onclick="window.selectedApprovalGrade = 'A'" class="grade-badge grade-A py-3 text-[10px] focus:ring-4 ring-green-100">A</button>
-                                    <button onclick="window.selectedApprovalGrade = 'B'" class="grade-badge grade-B py-3 text-[10px] focus:ring-4 ring-blue-100">B</button>
-                                    <button onclick="window.selectedApprovalGrade = 'C'" class="grade-badge grade-C py-3 text-[10px] focus:ring-4 ring-amber-100">C</button>
-                                    <button onclick="window.selectedApprovalGrade = 'D'" class="grade-badge grade-D py-3 text-[10px] focus:ring-4 ring-red-100">D</button>
+                                    <button onclick="window.selectedApprovalGrade = 'S'" class="grade-badge grade-S py-3 text-[10px]">S</button>
+                                    <button onclick="window.selectedApprovalGrade = 'A'" class="grade-badge grade-A py-3 text-[10px]">A</button>
+                                    <button onclick="window.selectedApprovalGrade = 'B'" class="grade-badge grade-B py-3 text-[10px]">B</button>
+                                    <button onclick="window.selectedApprovalGrade = 'C'" class="grade-badge grade-C py-3 text-[10px]">C</button>
+                                    <button onclick="window.selectedApprovalGrade = 'D'" class="grade-badge grade-D py-3 text-[10px]">D</button>
                                 </div>
                             </div>
                             <textarea id="approvalNote" class="w-full p-3 text-xs border border-slate-200 rounded-xl font-bold outline-none h-20" placeholder="Tulis catatan..."></textarea>
@@ -338,7 +339,7 @@
         </div>
     </div>
 
-    <!-- Modal Konfirmasi Hapus -->
+    <!-- Modal Hapus Data -->
     <div id="confirmDeleteModal" class="fixed inset-0 z-[200] modal-overlay hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-sm w-full shadow-2xl text-center">
             <h3 class="text-xl font-black text-slate-800 mb-2">Hapus Data?</h3>
@@ -350,11 +351,8 @@
     <!-- Modal Konfirmasi Hapus Pekerja -->
     <div id="confirmDeleteWorkerModal" class="fixed inset-0 z-[200] modal-overlay hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
-            <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" y1="8" x2="23" y2="14"/><line x1="23" y1="8" x2="17" y2="14"/></svg>
-            </div>
             <h3 class="text-lg font-black text-slate-800 mb-2">Hapus Pekerja?</h3>
-            <p class="text-sm text-slate-500 mb-8">Apakah anda yakin ingin menghapus pekerja ini?</p>
+            <p class="text-sm text-slate-500 mb-8 leading-relaxed">Apakah anda yakin ingin menghapus pekerja ini?</p>
             <div class="flex gap-3"><button onclick="window.closeDeleteWorkerModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl">Batal</button><button id="btnConfirmDeleteWorker" class="flex-1 py-3 bg-amber-600 text-white font-black rounded-2xl">Ya, Hapus</button></div>
         </div>
     </div>
@@ -364,8 +362,11 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // ==========================================
+        // KONFIGURASI MASTER
+        // ==========================================
         const MASTER_BOSS_NAME = "Bang Eija"; 
         const BOSS_SECRET = "bossque"; 
         const MASTER_OWNER = "Eija-01";
@@ -391,8 +392,6 @@
         let activeLogs = [];
         let workerWhitelist = [];
         let workerToDelete = null;
-        
-        // State Approval eksplisit pada window agar tombol Kirim Keputusan berfungsi
         window.selectedApprovalId = null;
         window.selectedApprovalStatus = '';
         window.selectedApprovalGrade = '';
@@ -417,6 +416,8 @@
             const earningsCard = document.getElementById('earningsCard');
             const workerManagerCard = document.getElementById('workerManagerCard');
             const notifArea = document.getElementById('notifArea');
+            const syncPulse = document.getElementById('syncPulse');
+            const syncText = document.getElementById('syncStatusText');
 
             if (ghConfig.active) {
                 status.innerText = ghConfig.role === 'boss' ? 'BOSS ROLE' : 'WORKER ROLE';
@@ -426,6 +427,9 @@
                 earningsCard.classList.toggle('hidden', ghConfig.role !== 'worker');
                 workerManagerCard.classList.toggle('hidden', ghConfig.role !== 'boss');
                 notifArea.classList.toggle('hidden', ghConfig.role !== 'worker'); 
+
+                syncPulse.className = "w-2 h-2 rounded-full bg-green-500 animate-pulse";
+                syncText.innerText = "Terhubung Cloud";
             } else {
                 status.innerText = "BELUM LOGIN"; 
                 status.className = "text-[9px] sm:text-xs bg-red-600 text-white border border-red-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter transition-all duration-300 cursor-pointer hover:bg-red-700 active:scale-95";
@@ -434,9 +438,13 @@
                 earningsCard.classList.add('hidden');
                 workerManagerCard.classList.add('hidden');
                 notifArea.classList.add('hidden');
+                
+                syncPulse.className = "w-2 h-2 rounded-full bg-red-500";
+                syncText.innerText = "Offline";
             }
         };
 
+        // --- WHITELIST FUNCTIONS ---
         const subscribeToWhitelist = () => {
             if (!currentUser) return;
             onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), (docSnap) => {
@@ -449,9 +457,9 @@
             const container = document.getElementById('whitelistContainer');
             if (!container) return;
             container.innerHTML = workerWhitelist.map(name => `
-                <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100">
+                <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
                     <span class="text-xs font-black text-slate-700">${name}</span>
-                    <button onclick="window.removeWorkerFromWhitelist('${name}')" class="text-red-400 hover:text-red-600">
+                    <button onclick="window.removeWorkerFromWhitelist('${name}')" class="text-red-400 hover:text-red-600 p-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
                 </div>
@@ -491,38 +499,45 @@
             } catch (e) { showToast("Gagal update cloud.", "error"); }
         };
 
-        // --- Logic Notifikasi ---
+        // --- NOTIFIKASI ---
         const updateNotifications = () => {
             if (ghConfig.role !== 'worker' || !ghConfig.active) return;
             const notifs = activeLogs.filter(l => l.workerName === ghConfig.workerName && (l.status === 'approved' || l.status === 'rejected')).slice(0, 5);
             const badge = document.getElementById('notifBadge');
             const list = document.getElementById('notifList');
+            
             if (notifs.length > 0) {
-                badge.innerText = notifs.length; badge.classList.remove('hidden');
+                badge.innerText = notifs.length;
+                badge.classList.remove('hidden');
                 list.innerHTML = notifs.map(n => `
-                    <div onclick="window.openPreview('${n.id}'); window.toggleNotifDropdown()" class="p-4 hover:bg-blue-50 cursor-pointer transition-all">
+                    <div onclick="window.openPreview('${n.id}'); window.toggleNotifDropdown()" class="p-4 hover:bg-blue-50 cursor-pointer transition-all border-b border-slate-50 last:border-0">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100"><img src="${n.imageUrl}" class="w-full h-full object-cover"></div>
+                            <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                                <img src="${n.imageUrl}" class="w-full h-full object-cover">
+                            </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-[11px] font-black text-slate-800 truncate">${n.fileName || 'Desain'}</p>
-                                <p class="text-[9px] font-bold ${n.status === 'approved' ? 'text-green-600' : 'text-red-500'} uppercase">${n.status === 'approved' ? 'Disetujui' : 'Ditolak'}</p>
+                                <p class="text-[9px] font-bold ${n.status === 'approved' ? 'text-green-600' : 'text-red-500'} uppercase">
+                                    ${n.status === 'approved' ? 'DISETUJUI (' + n.grade + ')' : 'DITOLAK'}
+                                </p>
                             </div>
                         </div>
                     </div>
                 `).join('');
-            } else { badge.classList.add('hidden'); list.innerHTML = '<div class="p-8 text-center text-[10px] text-slate-400 font-bold italic">Belum ada notifikasi</div>'; }
+            } else {
+                badge.classList.add('hidden');
+                list.innerHTML = '<div class="p-8 text-center text-[10px] text-slate-400 font-bold italic">Belum ada notifikasi</div>';
+            }
         };
 
         window.toggleNotifDropdown = () => document.getElementById('notifDropdown').classList.toggle('hidden');
 
-        // --- Approval Fix ---
+        // --- PERSETUJUAN ---
         window.prepareApproval = (status) => {
             window.selectedApprovalStatus = status;
             document.getElementById('approvalForm').classList.remove('hidden');
             document.getElementById('gradeSelector').classList.toggle('hidden', status === 'reject');
             window.selectedApprovalGrade = '';
-            
-            // Visual feedback pada tombol filter
             document.getElementById('btnApprove').style.opacity = status === 'approve' ? '1' : '0.5';
             document.getElementById('btnReject').style.opacity = status === 'reject' ? '1' : '0.5';
         };
@@ -531,14 +546,11 @@
             if (!window.selectedApprovalId) return;
             const btn = document.getElementById('btnSubmitFinalDecision');
             const note = document.getElementById('approvalNote').value.trim();
-            
             if (window.selectedApprovalStatus === 'approve' && !window.selectedApprovalGrade) {
                 return showToast("Pilih Grade terlebih dahulu!", "error");
             }
-
             btn.disabled = true;
             btn.innerText = "Mengirim...";
-
             try {
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'logs', window.selectedApprovalId), {
                     status: window.selectedApprovalStatus,
@@ -548,17 +560,20 @@
                 });
                 showToast("Keputusan berhasil dikirim.");
                 window.closeModal();
-            } catch (err) {
-                showToast("Gagal memperbarui database.", "error");
-            } finally {
-                btn.disabled = false;
-                btn.innerText = "Kirim Keputusan";
-            }
+            } catch (err) { showToast("Gagal update database.", "error"); }
+            finally { btn.disabled = false; btn.innerText = "Kirim Keputusan"; }
         };
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
-            if (user) { subscribeToCloud(); subscribeToWhitelist(); }
+            if (user) { 
+                subscribeToCloud(); 
+                subscribeToWhitelist(); 
+                // Jika sudah login, set status ONLINE visual segera
+                const status = document.getElementById('connectionStatus');
+                status.innerText = ghConfig.active ? (ghConfig.role === 'boss' ? 'BOSS ROLE' : 'WORKER ROLE') : "BELUM LOGIN";
+                status.className = ghConfig.active ? "text-[9px] sm:text-xs bg-green-600 text-white border border-green-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter" : status.className;
+            }
             updateLoginStatus();
         });
 
@@ -576,7 +591,10 @@
             const isBoss = ghConfig.role === 'boss' && ghConfig.active;
             const isWorker = ghConfig.role === 'worker' && ghConfig.active;
             const getPay = (grade) => ({ S: 5000, A: 4000, B: 3000, C: 2000, D: 1000 }[grade] || 0);
-            const totalEarningSum = activeLogs.filter(l => l.workerName === ghConfig.workerName && l.status === 'approved').reduce((acc, log) => acc + getPay(log.grade), 0);
+            
+            const totalEarningSum = activeLogs
+                .filter(l => l.workerName === ghConfig.workerName && l.status === 'approved')
+                .reduce((acc, log) => acc + getPay(log.grade), 0);
 
             document.getElementById('fileCount').innerText = activeLogs.length;
             document.getElementById('totalEarnings').innerText = totalEarningSum.toLocaleString('id-ID');
@@ -707,6 +725,16 @@
             t.className = `fixed bottom-6 left-1/2 -translate-x-1/2 p-4 rounded-2xl shadow-2xl z-[350] text-xs font-black flex transition-all transform items-center ${type === 'error' ? 'bg-red-600' : 'bg-slate-900'} text-white`;
             t.classList.remove('translate-y-24', 'opacity-0');
             setTimeout(() => t.classList.add('translate-y-24', 'opacity-0'), 3000);
+        };
+        window.handleStatusClick = () => {
+            if (!ghConfig.active) {
+                const card = document.getElementById('accessPanelCard');
+                if (card) {
+                    card.classList.add('shake-animate');
+                    showToast("Lengkapi data di panel ini untuk login!", "info");
+                    setTimeout(() => card.classList.remove('shake-animate'), 500);
+                }
+            }
         };
 
         initAuth();
