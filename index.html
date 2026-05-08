@@ -247,7 +247,8 @@
                 <div>
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Nama Pekerjaan/File:</label>
                     <input type="text" id="inputCustomFileName" placeholder="Contoh: Desain Banner Promo" class="w-full p-4 text-sm border border-slate-200 rounded-2xl bg-slate-50 outline-none font-bold focus:ring-2 focus:ring-blue-500 transition-all">
-                    <p class="text-[9px] text-slate-400 mt-2 italic font-bold tracking-tighter">*Wajib: Gunakan Huruf Kapital di awal setiap kata. Contoh: "Flyer Design"</p>
+                    <!-- REVISI: Teks peringatan diperbaiki agar tidak uppercase -->
+                    <p class="text-[9px] text-slate-400 mt-2 italic font-bold tracking-tighter normal-case">*Wajib: Gunakan Huruf Kapital di awal setiap kata. Contoh: "Flyer Design"</p>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button onclick="window.closeUploadConfirm()" class="flex-1 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all">Batal</button>
@@ -502,12 +503,14 @@
 
         window.removeWorkerFromWhitelist = (name) => {
             workerToDelete = name;
-            document.getElementById('confirmDeleteWorkerModal').classList.remove('hidden');
+            const modal = document.getElementById('confirmDeleteWorkerModal');
+            if (modal) modal.classList.remove('hidden');
         };
 
         window.closeDeleteWorkerModal = () => {
             workerToDelete = null;
-            document.getElementById('confirmDeleteWorkerModal').classList.add('hidden');
+            const modal = document.getElementById('confirmDeleteWorkerModal');
+            if (modal) modal.classList.add('hidden');
         };
 
         document.getElementById('btnConfirmDeleteWorker').onclick = async () => {
