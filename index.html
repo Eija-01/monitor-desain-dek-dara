@@ -79,13 +79,13 @@
                 </div>
             </div>
 
-            <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200 bg-blue-50/50">
+            <div id="earningsCard" class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200 bg-blue-50/50 hidden">
                 <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Estimasi Pendapatan</p>
                 <div class="flex items-baseline mt-2 text-blue-700">
                     <span class="text-xl font-extrabold mr-1">Rp</span>
                     <span id="totalEarnings" class="text-4xl font-black">0</span>
                 </div>
-                <button onclick="showToast('Fitur segera hadir!', 'info')" class="mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-black py-3 rounded-2xl shadow-lg transition-all text-xs uppercase tracking-widest">Tarik Gaji</button>
+                <a href="https://wa.link/z5zhuo" target="_blank" class="mt-4 w-full bg-green-500 hover:bg-green-600 text-white font-black py-3 rounded-2xl shadow-lg transition-all text-xs uppercase tracking-widest flex items-center justify-center">Tarik Gaji</a>
             </div>
 
             <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200">
@@ -102,7 +102,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div class="lg:col-span-4 space-y-6">
-                <!-- Akses Panel (Akan disembunyikan saat login) -->
+                <!-- Akses Panel -->
                 <div id="accessPanelCard" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm">
                     <h2 class="text-xs font-black mb-4 text-slate-400 uppercase tracking-widest">Akses Panel</h2>
                     <div id="configContent" class="space-y-4">
@@ -113,9 +113,25 @@
                         <div id="bossCodeArea" class="hidden">
                             <input type="password" id="bossCode" placeholder="Kode Akses Bos" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-red-50 focus:ring-2 focus:ring-red-500 outline-none font-bold">
                         </div>
-                        <input type="text" id="workerName" placeholder="Nama Anda" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none font-bold">
-                        <input type="password" id="ghToken" placeholder="Personal Access Token (GitHub)" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none font-bold">
-                        <button onclick="saveConfig()" class="w-full bg-slate-900 text-white text-[11px] font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest">Login</button>
+                        <input type="text" id="workerName" placeholder="Nama Anda" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none font-bold transition-all">
+                        <input type="password" id="ghToken" placeholder="Personal Access Token (GitHub)" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none font-bold transition-all">
+                        <button id="btnLogin" onclick="saveConfig()" class="w-full bg-slate-900 text-white text-[11px] font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest flex items-center justify-center gap-2">
+                            <span>Login Sistem</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Manajemen Pekerja (Hanya untuk Bos) -->
+                <div id="workerManagerCard" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm hidden">
+                    <h2 class="text-xs font-black mb-4 text-slate-400 uppercase tracking-widest">Daftar Pekerja Aktif</h2>
+                    <div class="space-y-3">
+                        <div class="flex gap-2">
+                            <input type="text" id="newWorkerName" placeholder="Nama baru..." class="flex-1 p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 outline-none font-bold">
+                            <button onclick="window.addWorkerToWhitelist()" class="bg-blue-600 text-white px-4 rounded-xl font-black text-xs hover:bg-blue-700 transition-all">+</button>
+                        </div>
+                        <div id="whitelistContainer" class="space-y-2 max-h-48 overflow-y-auto pr-2">
+                            <!-- List Pekerja muncul di sini -->
+                        </div>
                     </div>
                 </div>
 
@@ -157,7 +173,7 @@
                                     <th class="px-6 py-4">Waktu</th>
                                     <th class="px-6 py-4">Pekerja</th>
                                     <th class="px-6 py-4">Grade</th>
-                                    <th class="px-6 py-4 text-right">Aksi</th>
+                                    <th class="px-6 py-4 text-right">GAJI</th>
                                 </tr>
                             </thead>
                             <tbody id="activityLog" class="divide-y divide-slate-100"></tbody>
@@ -212,7 +228,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, updateDoc, deleteDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const MASTER_OWNER = "Eija-01";
         const MASTER_REPO = "monitor-desain-dek-dara";
@@ -238,6 +254,7 @@
         let ghConfig = JSON.parse(localStorage.getItem('gh_config_simple') || '{"workerName":"","token":"","role":"worker","active":false}');
         let activeLogs = [];
         let logToDelete = null;
+        let workerWhitelist = [];
 
         const initAuth = async () => {
             try {
@@ -253,6 +270,8 @@
             const status = document.getElementById('connectionStatus');
             const logoutBtn = document.getElementById('logoutBtn');
             const accessPanelCard = document.getElementById('accessPanelCard');
+            const earningsCard = document.getElementById('earningsCard');
+            const workerManagerCard = document.getElementById('workerManagerCard');
             const pulse = document.getElementById('syncPulse');
             const syncText = document.getElementById('syncStatusText');
 
@@ -263,6 +282,10 @@
                 
                 logoutBtn.classList.remove('hidden');
                 accessPanelCard.classList.add('hidden'); 
+                
+                earningsCard.classList.toggle('hidden', ghConfig.role !== 'worker');
+                workerManagerCard.classList.toggle('hidden', ghConfig.role !== 'boss');
+                
                 pulse.className = "w-2 h-2 rounded-full bg-green-500 animate-pulse transition-all";
                 syncText.innerText = "Terhubung Cloud";
             } else {
@@ -271,6 +294,9 @@
                 
                 logoutBtn.classList.add('hidden');
                 accessPanelCard.classList.remove('hidden'); 
+                earningsCard.classList.add('hidden');
+                workerManagerCard.classList.add('hidden');
+                
                 pulse.className = "w-2 h-2 rounded-full bg-red-500 transition-all";
                 syncText.innerText = "Offline";
             }
@@ -280,6 +306,7 @@
             currentUser = user;
             if (user) {
                 subscribeToCloud();
+                subscribeToWhitelist();
             }
             updateLoginStatus();
         });
@@ -298,6 +325,53 @@
                 activeLogs.sort((a, b) => (b.timestamp?.toMillis() || b.createdAt) - (a.timestamp?.toMillis() || a.createdAt));
                 renderUI();
             });
+        };
+
+        const subscribeToWhitelist = () => {
+            if (!currentUser) return;
+            onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), (docSnap) => {
+                if (docSnap.exists()) {
+                    workerWhitelist = docSnap.data().names || [];
+                } else {
+                    workerWhitelist = [];
+                }
+                renderWhitelistUI();
+            });
+        };
+
+        const renderWhitelistUI = () => {
+            const container = document.getElementById('whitelistContainer');
+            if (!container) return;
+            container.innerHTML = workerWhitelist.map(name => `
+                <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100">
+                    <span class="text-xs font-black text-slate-700">${name}</span>
+                    <button onclick="window.removeWorkerFromWhitelist('${name}')" class="text-red-400 hover:text-red-600 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+            `).join('');
+        };
+
+        window.addWorkerToWhitelist = async () => {
+            const input = document.getElementById('newWorkerName');
+            const name = input.value.trim();
+            if (!name) return;
+            if (workerWhitelist.includes(name)) return showToast("Nama sudah ada!", "error");
+
+            const newList = [...workerWhitelist, name];
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), { names: newList });
+                input.value = "";
+                showToast("Pekerja Ditambahkan.");
+            } catch (e) { showToast("Gagal update cloud.", "error"); }
+        };
+
+        window.removeWorkerFromWhitelist = async (name) => {
+            const newList = workerWhitelist.filter(n => n !== name);
+            try {
+                await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), { names: newList });
+                showToast("Pekerja Dihapus.");
+            } catch (e) { showToast("Gagal update cloud.", "error"); }
         };
 
         const renderUI = () => {
@@ -362,21 +436,50 @@
             document.getElementById('bossCodeArea').classList.toggle('hidden', document.getElementById('roleSelect').value !== 'boss');
         };
 
-        window.saveConfig = () => {
+        window.saveConfig = async () => {
             const role = document.getElementById('roleSelect').value;
             const code = document.getElementById('bossCode').value;
             const name = document.getElementById('workerName').value.trim();
             const token = document.getElementById('ghToken').value.trim();
+            const btn = document.getElementById('btnLogin');
 
             if (!name || !token) return showToast("Mohon isi Nama dan Token GitHub.", "error");
+            
+            // Animasi loading sederhana
+            btn.disabled = true;
+            btn.innerHTML = `<span>Mengecek Akses...</span>`;
+
             if (role === 'boss' && code !== BOSS_SECRET) {
                 triggerError('bossCode');
+                btn.disabled = false;
+                btn.innerHTML = `<span>Login Sistem</span>`;
                 return showToast("Kode Akses Bos Salah!", "error");
             }
             
             if (token.length < 30) {
                 triggerError('ghToken');
+                btn.disabled = false;
+                btn.innerHTML = `<span>Login Sistem</span>`;
                 return showToast("Token tidak valid.", "error");
+            }
+
+            // Validasi Whitelist Khusus Pekerja
+            if (role === 'worker') {
+                try {
+                    const docSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'));
+                    const allowedNames = docSnap.exists() ? docSnap.data().names || [] : [];
+                    
+                    if (!allowedNames.includes(name)) {
+                        triggerError('workerName');
+                        btn.disabled = false;
+                        btn.innerHTML = `<span>Login Sistem</span>`;
+                        return showToast("Nama Anda tidak terdaftar oleh Bos!", "error");
+                    }
+                } catch (err) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<span>Login Sistem</span>`;
+                    return showToast("Gagal validasi cloud.", "error");
+                }
             }
 
             ghConfig = { workerName: name, token: token, role: role, active: true };
@@ -427,6 +530,7 @@
             const data = activeLogs.find(l => l.id === logId);
             const isBoss = ghConfig.role === 'boss' && ghConfig.active;
             
+            if(!data) return;
             document.getElementById('modalImage').src = data.imageUrl;
             document.getElementById('modalWorkerName').innerText = data.workerName;
             document.getElementById('modalTime').innerText = new Date(data.timestamp?.toMillis() || data.createdAt).toLocaleString('id-ID');
