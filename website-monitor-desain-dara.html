@@ -10,6 +10,7 @@
         body { font-family: 'Inter', sans-serif; }
         .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
         .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
+        .hidden-config { display: none; }
     </style>
 </head>
 <body class="bg-slate-100 min-h-screen pb-12">
@@ -59,14 +60,16 @@
             
             <!-- Sidebar -->
             <div class="lg:col-span-1 space-y-6">
-                <!-- GitHub Config -->
+                <!-- GitHub Config Panel -->
                 <div class="glass-card p-5 rounded-2xl border border-slate-200">
-                    <h2 class="text-sm font-bold mb-4 flex justify-between items-center">
-                        Konfigurasi GitHub
-                    </h2>
-                    <div class="space-y-3">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-sm font-bold">Konfigurasi GitHub</h2>
+                        <button onclick="toggleConfig()" id="btnToggleConfig" class="text-[10px] text-blue-500 font-bold hover:underline">Ubah</button>
+                    </div>
+                    
+                    <div id="configContent" class="space-y-3">
                         <label class="text-[10px] font-bold text-slate-400 uppercase">Akses Token (ghp_...)</label>
-                        <input type="password" id="ghToken" placeholder="Masukkan Token Anda" class="w-full p-2 text-xs border rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
+                        <input type="password" id="ghToken" placeholder="Masukkan Token" class="w-full p-2 text-xs border rounded-lg bg-slate-50 focus:ring-2 focus:ring-blue-500 outline-none">
                         
                         <label class="text-[10px] font-bold text-slate-400 uppercase">Username</label>
                         <input type="text" id="ghOwner" value="Eija-01" class="w-full p-2 text-xs border rounded-lg bg-slate-100 outline-none" readonly>
@@ -74,7 +77,11 @@
                         <label class="text-[10px] font-bold text-slate-400 uppercase">Repository</label>
                         <input type="text" id="ghRepo" value="monitor-desain-dek-dara" class="w-full p-2 text-xs border rounded-lg bg-slate-100 outline-none" readonly>
                         
-                        <button onclick="saveConfig()" class="w-full bg-slate-800 text-white text-xs font-bold py-2 rounded-lg hover:bg-slate-900 transition-colors">Hubungkan Sekarang</button>
+                        <button onclick="saveConfig()" class="w-full bg-slate-800 text-white text-xs font-bold py-2 rounded-lg hover:bg-slate-900 transition-colors">Simpan Konfigurasi</button>
+                    </div>
+                    
+                    <div id="configLocked" class="hidden py-2 text-center">
+                        <p class="text-[10px] text-green-600 font-bold">Sistem Terhubung & Terkunci</p>
                     </div>
                 </div>
 
@@ -84,7 +91,7 @@
                     <label class="group relative flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-xl hover:border-blue-400 transition-all cursor-pointer bg-slate-50 overflow-hidden">
                         <div class="flex flex-col items-center justify-center py-4">
                             <svg class="w-8 h-8 text-slate-400 group-hover:text-blue-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                            <p class="text-xs text-slate-500 group-hover:text-blue-600">Pilih Gambar Hasil Kerja</p>
+                            <p class="text-xs text-slate-500 group-hover:text-blue-600 font-medium">Klik untuk Pilih Gambar</p>
                         </div>
                         <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="handleFileUpload(event)">
                         <div id="uploadProgress" class="absolute inset-0 bg-blue-600/10 hidden items-center justify-center">
@@ -93,9 +100,8 @@
                     </label>
                     
                     <div class="mt-6 pt-6 border-t">
-                        <!-- Silakan ganti href="#" dengan link tujuan Anda -->
                         <a href="#" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded-xl shadow-md flex items-center justify-center gap-2 text-sm">
-                            Tarik Penghasilan (WhatsApp/Link)
+                            Tarik Penghasilan
                         </a>
                     </div>
                 </div>
@@ -103,26 +109,24 @@
 
             <!-- Main Content -->
             <div class="lg:col-span-3 space-y-8">
-                
                 <!-- Galeri File -->
                 <div class="glass-card rounded-2xl shadow-sm border border-slate-200 p-6">
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-lg font-black text-slate-800">Galeri Desain Terupload</h2>
-                        <button onclick="fetchGallery()" class="text-xs text-blue-500 font-bold hover:underline">Refresh</button>
+                        <button onclick="fetchGallery()" class="text-xs text-blue-500 font-bold hover:underline flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                            Refresh Galeri
+                        </button>
                     </div>
-                    <div id="galleryContainer" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                        <!-- Gambar akan muncul di sini -->
-                    </div>
-                    <div id="galleryEmpty" class="py-12 text-center text-slate-400 italic text-sm">
-                        Belum ada gambar di repositori.
-                    </div>
+                    <div id="galleryContainer" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+                    <div id="galleryEmpty" class="py-12 text-center text-slate-400 italic text-sm">Belum ada gambar di folder /uploads.</div>
                 </div>
 
                 <!-- Log Aktivitas -->
                 <div class="glass-card rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                     <div class="p-6 border-b border-slate-50 flex justify-between items-center">
-                        <h2 class="text-lg font-black text-slate-800">Riwayat Upload & Gaji</h2>
-                        <button onclick="resetData()" class="text-xs text-red-400 font-bold hover:text-red-600">Reset Semua</button>
+                        <h2 class="text-lg font-black text-slate-800">Riwayat Pekerjaan</h2>
+                        <button onclick="resetData()" class="text-xs text-red-400 font-bold hover:text-red-600">Reset Counter</button>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full text-left">
@@ -147,6 +151,7 @@
         let count = 0;
         const RATE = 5000;
         let ghConfig = { token: '', owner: 'Eija-01', repo: 'monitor-desain-dek-dara' };
+        let isConfigVisible = true;
 
         window.onload = () => {
             const savedCount = localStorage.getItem('gh_uploadCount');
@@ -162,8 +167,32 @@
                 document.getElementById('ghToken').value = ghConfig.token;
                 checkConnection();
                 fetchGallery();
+                // Jika sudah ada token, sembunyikan panel konfigurasi agar rapi
+                isConfigVisible = false;
+                updateConfigDisplay();
             }
         };
+
+        function toggleConfig() {
+            isConfigVisible = !isConfigVisible;
+            updateConfigDisplay();
+        }
+
+        function updateConfigDisplay() {
+            const content = document.getElementById('configContent');
+            const locked = document.getElementById('configLocked');
+            const btn = document.getElementById('btnToggleConfig');
+            
+            if (isConfigVisible) {
+                content.classList.remove('hidden');
+                locked.classList.add('hidden');
+                btn.innerText = "Tutup";
+            } else {
+                content.classList.add('hidden');
+                locked.classList.remove('hidden');
+                btn.innerText = "Ubah";
+            }
+        }
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -177,9 +206,11 @@
             if(!ghConfig.token) return showToast("Harap masukkan Token GitHub!");
             
             localStorage.setItem('gh_config', JSON.stringify(ghConfig));
-            showToast("Konfigurasi Berhasil!");
+            showToast("Konfigurasi Tersimpan!");
             checkConnection();
             fetchGallery();
+            isConfigVisible = false;
+            updateConfigDisplay();
         }
 
         function checkConnection() {
@@ -191,7 +222,12 @@
         }
 
         async function handleFileUpload(event) {
-            if(!ghConfig.token) return showToast("Hubungkan GitHub terlebih dahulu!");
+            if(!ghConfig.token) {
+                showToast("Masukkkan Token GitHub di panel samping!");
+                isConfigVisible = true;
+                updateConfigDisplay();
+                return;
+            }
 
             const file = event.target.files[0];
             if(!file) return;
@@ -214,24 +250,28 @@
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            message: `Worker upload: ${fileName}`,
+                            message: `Upload worker: ${fileName}`,
                             content: content
                         })
                     });
 
                     if(response.ok) {
                         incrementCounter(file.name);
-                        showToast("File Terkirim!");
+                        showToast("Upload Berhasil!");
                         setTimeout(fetchGallery, 2000);
                     } else {
                         const err = await response.json();
-                        showToast("Error: " + err.message);
+                        showToast("Gagal: " + (err.message || "Token Salah"));
+                        if(response.status === 401) {
+                            isConfigVisible = true;
+                            updateConfigDisplay();
+                        }
                     }
                     progress.classList.replace('flex', 'hidden');
                     event.target.value = '';
                 };
             } catch (error) {
-                showToast("Gagal mengunggah!");
+                showToast("Koneksi Error!");
                 progress.classList.replace('flex', 'hidden');
             }
         }
@@ -254,7 +294,7 @@
         function renderLogs() {
             const logs = JSON.parse(localStorage.getItem('gh_logs') || '[]');
             document.getElementById('activityLog').innerHTML = logs.map(log => `
-                <tr class="hover:bg-slate-50">
+                <tr class="hover:bg-slate-50 transition-colors">
                     <td class="px-6 py-4 text-[10px] text-slate-400 font-medium">${log.time}</td>
                     <td class="px-6 py-4 text-xs font-bold text-slate-700">${log.file}</td>
                     <td class="px-6 py-4 text-xs text-right font-black text-green-600">+Rp ${log.value.toLocaleString('id-ID')}</td>
@@ -279,24 +319,5 @@
                     if(images.length > 0) {
                         empty.classList.add('hidden');
                         container.innerHTML = images.map(img => `
-                            <div class="group relative aspect-square bg-slate-200 rounded-xl overflow-hidden shadow-sm">
-                                <img src="${img.download_url}" class="w-full h-full object-cover group-hover:scale-110 transition-transform">
-                            </div>
-                        `).join('');
-                    }
-                }
-            } catch (e) {}
-        }
-
-        function resetData() {
-            if(confirm('Hapus semua hitungan? (File di GitHub tidak akan terhapus)')) {
-                count = 0;
-                localStorage.removeItem('gh_uploadCount');
-                localStorage.removeItem('gh_logs');
-                updateUI();
-                renderLogs();
-            }
-        }
-    </script>
-</body>
-</html>
+                            <div class="group relative aspect-square bg-slate-200 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all">
+                                <img src="${img.download_url}" class="w-full h-full object-cover group
