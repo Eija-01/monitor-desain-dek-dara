@@ -232,7 +232,7 @@
         </div>
     </main>
 
-    <!-- Modal Konfirmasi Upload -->
+    <!-- Modal Konfirmasi Upload (Grade S Shimmer & Grid D) -->
     <div id="uploadConfirmModal" class="fixed inset-0 z-[250] modal-overlay hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl overflow-y-auto max-h-[90vh]">
             <h3 class="text-xl font-black text-slate-800 mb-2">Konfirmasi Pekerjaan</h3>
@@ -259,7 +259,7 @@
                             <span class="text-[12px] font-extrabold">Rp 5.000</span>
                         </div>
                         
-                        <!-- A-D dalam Grid -->
+                        <!-- Grade Lainnya -->
                         <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100">
                             <span class="text-[10px] font-black text-emerald-600">Grade A</span>
                             <span class="text-[10px] font-bold text-slate-500">Rp 4.000</span>
@@ -316,8 +316,8 @@
                     <!-- Mode Persetujuan -->
                     <div id="approvalActionsArea" class="hidden mt-8 border-t border-slate-100 pt-6 space-y-4">
                         <div class="grid grid-cols-2 gap-3">
-                            <button id="btnApprove" onclick="window.prepareApproval('approve')" class="py-3 bg-green-600 text-white font-black rounded-xl text-xs uppercase transition-all">Setujui</button>
-                            <button id="btnReject" onclick="window.prepareApproval('reject')" class="py-3 bg-red-600 text-white font-black rounded-xl text-xs uppercase transition-all">Tolak</button>
+                            <button id="btnApprove" onclick="window.prepareApproval('approved')" class="py-3 bg-green-600 text-white font-black rounded-xl text-xs uppercase">Setujui</button>
+                            <button id="btnReject" onclick="window.prepareApproval('rejected')" class="py-3 bg-red-600 text-white font-black rounded-xl text-xs uppercase">Tolak</button>
                         </div>
                         <div id="approvalForm" class="hidden space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
                             <div id="gradeSelector" class="hidden">
@@ -339,21 +339,21 @@
         </div>
     </div>
 
-    <!-- Modal Hapus Data -->
-    <div id="confirmDeleteModal" class="fixed inset-0 z-[200] modal-overlay hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-sm w-full shadow-2xl text-center">
-            <h3 class="text-xl font-black text-slate-800 mb-2">Hapus Data?</h3>
-            <p class="text-sm text-slate-500 mb-8">Data akan dihapus permanen dari sistem.</p>
-            <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl">Batal</button><button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 text-white font-black rounded-2xl">Hapus</button></div>
-        </div>
-    </div>
-
-    <!-- Modal Konfirmasi Hapus Pekerja -->
+    <!-- Modal Hapus Pekerja -->
     <div id="confirmDeleteWorkerModal" class="fixed inset-0 z-[200] modal-overlay hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
             <h3 class="text-lg font-black text-slate-800 mb-2">Hapus Pekerja?</h3>
             <p class="text-sm text-slate-500 mb-8 leading-relaxed">Apakah anda yakin ingin menghapus pekerja ini?</p>
-            <div class="flex gap-3"><button onclick="window.closeDeleteWorkerModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl">Batal</button><button id="btnConfirmDeleteWorker" class="flex-1 py-3 bg-amber-600 text-white font-black rounded-2xl">Ya, Hapus</button></div>
+            <div class="flex gap-3"><button onclick="window.closeDeleteWorkerModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl">Batal</button><button id="btnConfirmDeleteWorker" class="flex-1 py-3 bg-amber-600 text-white font-black rounded-2xl hover:bg-amber-700 transition-all">Ya, Hapus</button></div>
+        </div>
+    </div>
+
+    <!-- Modal Hapus Log -->
+    <div id="confirmDeleteModal" class="fixed inset-0 z-[200] modal-overlay hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-sm w-full shadow-2xl text-center">
+            <h3 class="text-xl font-black text-slate-800 mb-2">Hapus Data?</h3>
+            <p class="text-sm text-slate-500 mb-8">Data akan dihapus permanen.</p>
+            <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl">Batal</button><button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 text-white font-black rounded-2xl">Hapus</button></div>
         </div>
     </div>
 
@@ -362,11 +362,8 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, onSnapshot, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, updateDoc, deleteDoc, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // ==========================================
-        // KONFIGURASI MASTER
-        // ==========================================
         const MASTER_BOSS_NAME = "Bang Eija"; 
         const BOSS_SECRET = "bossque"; 
         const MASTER_OWNER = "Eija-01";
@@ -427,7 +424,6 @@
                 earningsCard.classList.toggle('hidden', ghConfig.role !== 'worker');
                 workerManagerCard.classList.toggle('hidden', ghConfig.role !== 'boss');
                 notifArea.classList.toggle('hidden', ghConfig.role !== 'worker'); 
-
                 syncPulse.className = "w-2 h-2 rounded-full bg-green-500 animate-pulse";
                 syncText.innerText = "Terhubung Cloud";
             } else {
@@ -438,13 +434,11 @@
                 earningsCard.classList.add('hidden');
                 workerManagerCard.classList.add('hidden');
                 notifArea.classList.add('hidden');
-                
                 syncPulse.className = "w-2 h-2 rounded-full bg-red-500";
                 syncText.innerText = "Offline";
             }
         };
 
-        // --- WHITELIST FUNCTIONS ---
         const subscribeToWhitelist = () => {
             if (!currentUser) return;
             onSnapshot(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), (docSnap) => {
@@ -499,18 +493,15 @@
             } catch (e) { showToast("Gagal update cloud.", "error"); }
         };
 
-        // --- NOTIFIKASI ---
         const updateNotifications = () => {
             if (ghConfig.role !== 'worker' || !ghConfig.active) return;
             const notifs = activeLogs.filter(l => l.workerName === ghConfig.workerName && (l.status === 'approved' || l.status === 'rejected')).slice(0, 5);
             const badge = document.getElementById('notifBadge');
             const list = document.getElementById('notifList');
-            
             if (notifs.length > 0) {
-                badge.innerText = notifs.length;
-                badge.classList.remove('hidden');
+                badge.innerText = notifs.length; badge.classList.remove('hidden');
                 list.innerHTML = notifs.map(n => `
-                    <div onclick="window.openPreview('${n.id}'); window.toggleNotifDropdown()" class="p-4 hover:bg-blue-50 cursor-pointer transition-all border-b border-slate-50 last:border-0">
+                    <div onclick="window.openPreview('${n.id}'); window.toggleNotifDropdown()" class="p-4 hover:bg-blue-50 cursor-pointer border-b border-slate-50 last:border-0 transition-all">
                         <div class="flex items-center gap-3">
                             <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
                                 <img src="${n.imageUrl}" class="w-full h-full object-cover">
@@ -518,35 +509,31 @@
                             <div class="flex-1 min-w-0">
                                 <p class="text-[11px] font-black text-slate-800 truncate">${n.fileName || 'Desain'}</p>
                                 <p class="text-[9px] font-bold ${n.status === 'approved' ? 'text-green-600' : 'text-red-500'} uppercase">
-                                    ${n.status === 'approved' ? 'DISETUJUI (' + n.grade + ')' : 'DITOLAK'}
+                                    ${n.status === 'approved' ? 'Disetujui (' + n.grade + ')' : 'Ditolak'}
                                 </p>
                             </div>
                         </div>
                     </div>
                 `).join('');
-            } else {
-                badge.classList.add('hidden');
-                list.innerHTML = '<div class="p-8 text-center text-[10px] text-slate-400 font-bold italic">Belum ada notifikasi</div>';
-            }
+            } else { badge.classList.add('hidden'); list.innerHTML = '<div class="p-8 text-center text-[10px] text-slate-400 font-bold italic">Belum ada notifikasi</div>'; }
         };
 
         window.toggleNotifDropdown = () => document.getElementById('notifDropdown').classList.toggle('hidden');
 
-        // --- PERSETUJUAN ---
         window.prepareApproval = (status) => {
             window.selectedApprovalStatus = status;
             document.getElementById('approvalForm').classList.remove('hidden');
-            document.getElementById('gradeSelector').classList.toggle('hidden', status === 'reject');
+            document.getElementById('gradeSelector').classList.toggle('hidden', status === 'rejected');
             window.selectedApprovalGrade = '';
-            document.getElementById('btnApprove').style.opacity = status === 'approve' ? '1' : '0.5';
-            document.getElementById('btnReject').style.opacity = status === 'reject' ? '1' : '0.5';
+            document.getElementById('btnApprove').style.opacity = status === 'approved' ? '1' : '0.5';
+            document.getElementById('btnReject').style.opacity = status === 'rejected' ? '1' : '0.5';
         };
 
         window.submitApproval = async () => {
             if (!window.selectedApprovalId) return;
             const btn = document.getElementById('btnSubmitFinalDecision');
             const note = document.getElementById('approvalNote').value.trim();
-            if (window.selectedApprovalStatus === 'approve' && !window.selectedApprovalGrade) {
+            if (window.selectedApprovalStatus === 'approved' && !window.selectedApprovalGrade) {
                 return showToast("Pilih Grade terlebih dahulu!", "error");
             }
             btn.disabled = true;
@@ -554,7 +541,7 @@
             try {
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'logs', window.selectedApprovalId), {
                     status: window.selectedApprovalStatus,
-                    grade: window.selectedApprovalStatus === 'approve' ? window.selectedApprovalGrade : '',
+                    grade: window.selectedApprovalStatus === 'approved' ? window.selectedApprovalGrade : '',
                     bossNote: note,
                     reviewedAt: serverTimestamp()
                 });
@@ -566,14 +553,7 @@
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
-            if (user) { 
-                subscribeToCloud(); 
-                subscribeToWhitelist(); 
-                // Jika sudah login, set status ONLINE visual segera
-                const status = document.getElementById('connectionStatus');
-                status.innerText = ghConfig.active ? (ghConfig.role === 'boss' ? 'BOSS ROLE' : 'WORKER ROLE') : "BELUM LOGIN";
-                status.className = ghConfig.active ? "text-[9px] sm:text-xs bg-green-600 text-white border border-green-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter" : status.className;
-            }
+            if (user) { subscribeToCloud(); subscribeToWhitelist(); }
             updateLoginStatus();
         });
 
@@ -591,10 +571,7 @@
             const isBoss = ghConfig.role === 'boss' && ghConfig.active;
             const isWorker = ghConfig.role === 'worker' && ghConfig.active;
             const getPay = (grade) => ({ S: 5000, A: 4000, B: 3000, C: 2000, D: 1000 }[grade] || 0);
-            
-            const totalEarningSum = activeLogs
-                .filter(l => l.workerName === ghConfig.workerName && l.status === 'approved')
-                .reduce((acc, log) => acc + getPay(log.grade), 0);
+            const totalEarningSum = activeLogs.filter(l => l.workerName === ghConfig.workerName && l.status === 'approved').reduce((acc, log) => acc + getPay(log.grade), 0);
 
             document.getElementById('fileCount').innerText = activeLogs.length;
             document.getElementById('totalEarnings').innerText = totalEarningSum.toLocaleString('id-ID');
@@ -622,22 +599,18 @@
             const data = activeLogs.find(l => l.id === logId);
             const isBoss = ghConfig.role === 'boss' && ghConfig.active;
             if(!data) return;
-            
             window.selectedApprovalId = data.id;
             document.getElementById('modalImage').src = data.imageUrl;
             document.getElementById('modalWorkerName').innerText = data.fileName || data.workerName;
             document.getElementById('modalDate').innerText = new Date(data.timestamp?.toMillis() || data.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            
             document.getElementById('approvalForm').classList.add('hidden');
             document.getElementById('approvalActionsArea').classList.add('hidden');
             document.getElementById('detailGradeArea').classList.add('hidden');
             document.getElementById('bossNoteArea').classList.add('hidden');
             document.getElementById('detailWorker').innerText = data.workerName;
-
             const getPay = (grade) => ({ S: 5000, A: 4000, B: 3000, C: 2000, D: 1000 }[grade] || 0);
             document.getElementById('detailEarnings').innerText = `Rp ${getPay(data.grade).toLocaleString('id-ID')}`;
             const badge = document.getElementById('detailStatusBadge');
-            
             if (data.status === 'approved') {
                 badge.innerHTML = `<span class="grade-badge grade-${data.grade}">DISETUJUI</span>`;
                 document.getElementById('detailGradeArea').classList.remove('hidden');
@@ -648,10 +621,7 @@
                 badge.innerHTML = `<span class="grade-badge grade-pending">PENDING</span>`;
                 if (isBoss) document.getElementById('approvalActionsArea').classList.remove('hidden');
             }
-            if (data.bossNote) {
-                document.getElementById('bossNoteArea').classList.remove('hidden');
-                document.getElementById('detailBossNote').innerText = data.bossNote;
-            }
+            if (data.bossNote) { document.getElementById('bossNoteArea').classList.remove('hidden'); document.getElementById('detailBossNote').innerText = data.bossNote; }
             document.getElementById('imageModal').classList.remove('hidden');
         };
 
@@ -729,11 +699,7 @@
         window.handleStatusClick = () => {
             if (!ghConfig.active) {
                 const card = document.getElementById('accessPanelCard');
-                if (card) {
-                    card.classList.add('shake-animate');
-                    showToast("Lengkapi data di panel ini untuk login!", "info");
-                    setTimeout(() => card.classList.remove('shake-animate'), 500);
-                }
+                if (card) { card.classList.add('shake-animate'); showToast("Lengkapi data di panel ini untuk login!", "info"); setTimeout(() => card.classList.remove('shake-animate'), 500); }
             }
         };
 
