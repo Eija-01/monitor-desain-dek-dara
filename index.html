@@ -65,7 +65,6 @@
         }
         @keyframes sweep { 0% { left: -150%; } 30% { left: 150%; } 100% { left: 150%; } }
 
-        /* Class khusus untuk mematikan shimmer di info panel */
         .no-shimmer { animation: none !important; }
         .no-shimmer::after { display: none !important; }
 
@@ -127,8 +126,14 @@
                     <div id="connectionStatus" class="hidden md:block text-[10px] bg-green-600 text-white border border-green-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter">
                         ONLINE
                     </div>
-                    <!-- Hamburger Menu Button (Muncul di PC & Hape setelah login) -->
-                    <button id="hamburgerBtn" onclick="window.toggleMobileMenu()" class="flex p-2 bg-slate-800 rounded-lg hover:bg-slate-700 transition-all active:scale-95">
+                    
+                    <!-- Logout Desktop (PC/Tablet Only) -->
+                    <button id="logoutBtnDesktop" onclick="window.handleLogout()" class="hidden md:block text-[10px] bg-white/10 hover:bg-white/20 text-white px-4 py-1.5 rounded-full font-black uppercase transition-all border border-white/20 active:scale-95">
+                        LOGOUT
+                    </button>
+
+                    <!-- Hamburger Mobile (Hanya Smartphone) -->
+                    <button id="hamburgerBtn" onclick="window.toggleMobileMenu()" class="md:hidden flex p-2 bg-slate-800 rounded-lg hover:bg-slate-700 transition-all active:scale-95">
                         <svg id="hamburgerIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                     </button>
                 </div>
@@ -140,12 +145,11 @@
             </div>
         </div>
 
-        <!-- Dropdown / Mobile Menu -->
-        <div id="mobileDrawer" class="hidden absolute right-4 top-20 w-48 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 p-2 z-[100] animate-in fade-in zoom-in duration-200">
-            <div class="w-full text-center py-3 px-4 mb-2 rounded-xl font-black text-[10px] uppercase bg-green-50 text-green-600 border border-green-100">CLOUD ONLINE</div>
-            <button onclick="window.handleLogout()" class="w-full text-left py-3 px-4 rounded-xl font-black text-[10px] uppercase text-red-600 hover:bg-red-50 transition-all flex items-center gap-3">
+        <!-- Dropdown / Mobile Menu (Hanya Smartphone) -->
+        <div id="mobileDrawer" class="hidden absolute right-4 top-20 w-48 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 p-2 z-[100] animate-in fade-in zoom-in duration-200 md:hidden">
+            <button onclick="window.handleLogout()" class="w-full text-left py-4 px-4 rounded-xl font-black text-[10px] uppercase text-red-600 hover:bg-red-50 transition-all flex items-center gap-3">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                Logout Sistem
+                Logout
             </button>
         </div>
     </nav>
@@ -182,7 +186,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div class="lg:col-span-4 space-y-6 order-2 lg:order-1">
-                <!-- Panel Akses -->
+                <!-- Panel Login -->
                 <div id="loginSection" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm transition-all duration-300">
                     <h2 class="text-xs font-black mb-4 text-slate-400 uppercase tracking-widest">Akses Panel</h2>
                     <div class="space-y-4">
@@ -193,7 +197,7 @@
                         <div id="bossCodeArea" class="hidden"><input type="password" id="bossCode" placeholder="Kode Akses Bos" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-red-50 font-bold outline-none"></div>
                         <div id="nameInputArea"><input type="text" id="workerName" placeholder="Nama Anda" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none"></div>
                         <input type="password" id="ghToken" placeholder="Personal Access Token (GitHub)" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none">
-                        <button id="btnLogin" onclick="window.saveConfig()" class="w-full bg-slate-900 text-white text-[11px] font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest">Login Sistem</button>
+                        <button id="btnLogin" onclick="window.saveConfig()" class="w-full bg-slate-900 text-white text-[11px] font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest">Login</button>
                     </div>
                 </div>
 
@@ -209,7 +213,7 @@
                     </div>
                 </div>
 
-                <!-- Upload (Worker Only) -->
+                <!-- Upload Section (Worker Only) -->
                 <div id="uploadCard" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm hidden transition-all">
                     <h2 class="text-xs font-black mb-4 text-slate-400 uppercase tracking-widest">Upload Pekerjaan</h2>
                     <label class="group relative flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-slate-200 rounded-3xl hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer bg-slate-50">
@@ -226,7 +230,7 @@
                         </div>
                     </label>
 
-                    <!-- Info Ketentuan Kualitas & Gaji -->
+                    <!-- Ketentuan Gaji -->
                     <div class="mt-4 p-5 bg-blue-50/50 rounded-2xl border border-blue-100 space-y-3">
                         <p class="text-[11px] font-black text-blue-700 uppercase tracking-wider text-center sm:text-left">Ketentuan Kualitas & Gaji:</p>
                         <div class="grid grid-cols-2 gap-2">
@@ -240,21 +244,22 @@
                             <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[10px] font-black text-red-600">Grade D</span><span class="text-[10px] font-bold text-slate-500">Rp 1.000</span></div>
                         </div>
                         <div class="pt-2 border-t border-blue-100 text-[9px] text-slate-500 font-bold leading-relaxed">
-                            <span class="text-red-500 uppercase tracking-tighter">Note:</span> Desain bisa dihapus Bos jika kurang menarik. Anda dapat upload ulang versi terbaik untuk meningkatkan Grade anda.
+                            <span class="text-red-500 uppercase tracking-tighter">Note:</span> Desain bisa dihapus Bos jika kurang menarik. Anda dapat upload ulang versi terbaik.
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="lg:col-span-8 space-y-8 order-1 lg:order-2">
+                <!-- Galeri -->
                 <div class="glass-card rounded-3xl shadow-sm border border-slate-200 p-6">
-                    <h2 class="text-lg font-black text-slate-800 tracking-tight mb-6">Galeri Hasil Kerja</h2>
+                    <h2 class="text-lg font-black text-slate-800 tracking-tight mb-6">Galeri Desain</h2>
                     <div id="galleryContainer" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3"></div>
                     <div id="galleryEmpty" class="py-12 text-center text-slate-400 italic text-xs font-medium">Belum ada desain diunggah.</div>
                 </div>
 
-                <!-- Panel Riwayat -->
-                <div id="historyPanel" class="glass-card rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <!-- Panel Riwayat (Khusus Login) -->
+                <div id="historyPanel" class="glass-card rounded-3xl shadow-sm border border-slate-200 overflow-hidden hidden">
                     <div class="p-5 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
                         <h2 class="text-lg font-black text-slate-800 tracking-tight">Riwayat Penilaian</h2>
                         <span id="badgeMode" class="text-[10px] font-black px-3 py-1 bg-slate-200 rounded-full text-slate-500 uppercase tracking-widest">-</span>
@@ -282,7 +287,6 @@
         <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl overflow-y-auto max-h-[95vh]">
             <h3 class="text-xl font-black text-slate-800 mb-1">Konfirmasi Pekerjaan</h3>
             <p class="text-sm text-slate-500 mb-6 font-bold italic text-center sm:text-left">Pratinjau hasil kerja Anda sebelum dikirim.</p>
-            
             <div class="space-y-4">
                 <div class="w-full aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 mb-4 shadow-inner">
                     <img id="uploadPreviewImg" src="" class="w-full h-full object-contain">
@@ -293,8 +297,8 @@
                     <p class="text-[9px] text-slate-400 mt-2 italic font-bold tracking-tighter normal-case">*Wajib: Gunakan Huruf Kapital di awal setiap kata. Contoh: "Flyer Design"</p>
                 </div>
                 <div class="flex gap-3 pt-2">
-                    <button onclick="window.closeUploadConfirm()" class="flex-1 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all">Batal</button>
-                    <button id="btnSubmitUpload" onclick="window.submitFinalUpload()" class="flex-1 py-4 bg-blue-600 text-white font-black rounded-2xl active:scale-95 shadow-lg shadow-blue-200">Upload Sekarang</button>
+                    <button onclick="window.closeUploadConfirm()" class="flex-1 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all text-[11px] uppercase">Batal</button>
+                    <button id="btnSubmitUpload" onclick="window.submitFinalUpload()" class="flex-1 py-4 bg-blue-600 text-white font-black rounded-2xl active:scale-95 shadow-lg shadow-blue-200 text-[11px] uppercase">Upload Sekarang</button>
                 </div>
             </div>
         </div>
@@ -321,8 +325,8 @@
                 </div>
                 <div id="approvalActionsArea" class="hidden mt-8 border-t border-slate-100 pt-6 space-y-4">
                     <div class="grid grid-cols-2 gap-3">
-                        <button id="btnApprove" onclick="window.prepareApproval('approved')" class="py-3 bg-green-600 text-white font-black rounded-xl text-[10px] uppercase transition-all">Setujui</button>
-                        <button id="btnReject" onclick="window.prepareApproval('rejected')" class="py-3 bg-red-600 text-white font-black rounded-xl text-[10px] uppercase transition-all">Tolak</button>
+                        <button id="btnApprove" onclick="window.prepareApproval('approved')" class="py-3 bg-green-600 text-white font-black rounded-xl text-[10px] uppercase">Setujui</button>
+                        <button id="btnReject" onclick="window.prepareApproval('rejected')" class="py-3 bg-red-600 text-white font-black rounded-xl text-[10px] uppercase">Tolak</button>
                     </div>
                     <div id="approvalForm" class="hidden space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200 shadow-inner">
                         <div id="gradeSelector" class="hidden">
@@ -407,6 +411,7 @@
             const guestLoginBtn = document.getElementById('guestLoginBtn');
             const hamburgerBtn = document.getElementById('hamburgerBtn');
             const mobileDrawer = document.getElementById('mobileDrawer');
+            const logoutBtnDesktop = document.getElementById('logoutBtnDesktop');
             const earningsCard = document.getElementById('earningsCard');
             const loginSection = document.getElementById('loginSection');
             const workerManagerCard = document.getElementById('workerManagerCard');
@@ -421,10 +426,13 @@
             if (ghConfig.active) {
                 subtitle.innerText = ghConfig.role === 'boss' ? 'MODE BOS' : 'MODE PEKERJA';
                 authActions.classList.remove('hidden');
-                if (hamburgerBtn) hamburgerBtn.classList.remove('hidden');
+                
+                // Desktop: Show Logout, Hide Hamburger
+                if (logoutBtnDesktop) logoutBtnDesktop.classList.remove('hidden');
+                if (hamburgerBtn) hamburgerBtn.classList.add('md:hidden'); 
+
                 guestLoginBtn.classList.add('hidden');
                 loginSection.classList.add('hidden'); 
-                
                 if (historyPanel) historyPanel.classList.remove('hidden');
                 
                 if (earningsCard) earningsCard.classList.toggle('hidden', ghConfig.role !== 'worker');
@@ -440,7 +448,6 @@
                 if (mobileDrawer) mobileDrawer.classList.add('hidden');
                 guestLoginBtn.classList.remove('hidden');
                 loginSection.classList.remove('hidden'); 
-                
                 if (historyPanel) historyPanel.classList.add('hidden');
                 
                 if (earningsCard) earningsCard.classList.add('hidden');
@@ -453,7 +460,6 @@
             }
         };
 
-        // REVISI: Fungsi scroll menutup dropdown
         window.addEventListener('scroll', () => {
             const d = document.getElementById('mobileDrawer');
             const n = document.getElementById('notifDropdown');
@@ -508,7 +514,6 @@
             try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), { names: newList }); showToast("Hapus berhasil."); window.closeDeleteWorkerModal(); } catch (e) { showToast("Gagal.", "error"); }
         };
 
-        // --- NOTIFIKASI SYSTEM ---
         const updateNotifications = () => {
             if (ghConfig.role !== 'worker' || !ghConfig.active) return;
             const notifs = activeLogs.filter(l => l.workerName === ghConfig.workerName && (l.status === 'approved' || l.status === 'rejected') && (l.reviewedAtMillis || 0) > lastClearedAt);
@@ -572,7 +577,7 @@
         
         document.getElementById('btnConfirmDelete').onclick = async () => {
             if (!logToDelete) return;
-            try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'logs', logToDelete)); showToast("Pekerjaan dihapus."); window.closeDeleteModal(); } catch (e) { showToast("Gagal hapus.", "error"); }
+            try { await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'logs', logToDelete)); showToast("Pekerjaan dihapus."); window.closeDeleteModal(); } catch (e) { showToast("Gagal.", "error"); }
         };
 
         window.openPreview = (logId) => {
@@ -617,6 +622,7 @@
             updateLoginStatus();
         });
 
+        // REVISI: Fungsi subscribeToCloud dipulihkan
         const subscribeToCloud = () => {
             if (!currentUser) return;
             onSnapshot(collection(db, 'artifacts', appId, 'public', 'data', 'logs'), (snap) => {
