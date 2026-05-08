@@ -120,20 +120,15 @@
                     </div>
                 </div>
 
-                <!-- Kontrol Navigasi Desktop & Mobile -->
-                <div id="authActions" class="hidden flex items-center gap-3">
+                <!-- Kontrol Navigasi (Hanya muncul jika login) -->
+                <div id="authActions" class="hidden flex items-center gap-2 sm:gap-3">
                     <div id="connectionStatus" class="hidden md:block text-[10px] bg-green-600 text-white border border-green-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter">
                         ONLINE
                     </div>
                     
-                    <!-- Logout Desktop (Hanya muncul di PC/Tablet) -->
-                    <button id="logoutBtnDesktop" onclick="window.handleLogout()" class="hidden md:block text-[10px] bg-white/10 hover:bg-white/20 text-white px-4 py-1.5 rounded-full font-bold uppercase transition-all border border-white/20 active:scale-95">
+                    <!-- REVISI: Tombol Logout tampil langsung di semua perangkat (Hamburger Dihapus) -->
+                    <button id="logoutBtn" onclick="window.handleLogout()" class="text-[10px] bg-white/10 hover:bg-white/20 text-white px-3 sm:px-4 py-1.5 rounded-full font-black uppercase transition-all border border-white/20 active:scale-95 whitespace-nowrap">
                         LOGOUT
-                    </button>
-
-                    <!-- Hamburger Mobile (Hanya Smartphone) -->
-                    <button id="hamburgerBtn" onclick="window.toggleMobileMenu()" class="md:hidden flex p-2 bg-slate-800 rounded-lg hover:bg-slate-700 transition-all active:scale-95">
-                        <svg id="hamburgerIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                     </button>
                 </div>
 
@@ -142,14 +137,6 @@
                     BELUM LOGIN
                 </button>
             </div>
-        </div>
-
-        <!-- Dropdown Menu (Khusus Mobile Smartphone) -->
-        <div id="mobileDrawer" class="hidden absolute right-4 top-20 w-48 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 p-2 z-[100] animate-in fade-in zoom-in duration-200 md:hidden">
-            <button onclick="window.handleLogout()" class="w-full text-left py-4 px-4 rounded-xl font-black text-[10px] uppercase text-red-600 hover:bg-red-50 transition-all flex items-center gap-3">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                Logout
-            </button>
         </div>
     </nav>
 
@@ -212,7 +199,7 @@
                     </div>
                 </div>
 
-                <!-- Upload Section (Worker Only) -->
+                <!-- Upload Section -->
                 <div id="uploadCard" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm hidden transition-all">
                     <h2 class="text-xs font-black mb-4 text-slate-400 uppercase tracking-widest">Upload Pekerjaan</h2>
                     <label class="group relative flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-slate-200 rounded-3xl hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer bg-slate-50">
@@ -293,7 +280,7 @@
                 <div>
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Nama Pekerjaan/File:</label>
                     <input type="text" id="inputCustomFileName" placeholder="Contoh: Desain Banner Promo" class="w-full p-4 text-sm border border-slate-200 rounded-xl bg-slate-50 outline-none font-bold focus:ring-2 focus:ring-blue-500 transition-all text-slate-600">
-                    <p class="text-[9px] text-slate-400 mt-2 italic font-bold tracking-tighter normal-case">*Wajib: Gunatur Huruf Kapital di awal setiap kata. Contoh: "Flyer Design"</p>
+                    <p class="text-[9px] text-slate-400 mt-2 italic font-bold tracking-tighter normal-case">*Wajib: Gunakan Huruf Kapital di awal setiap kata. Contoh: "Flyer Design"</p>
                 </div>
                 <div class="flex gap-3 pt-2">
                     <button onclick="window.closeUploadConfirm()" class="flex-1 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all text-[11px] uppercase text-slate-500 font-bold">Batal</button>
@@ -306,7 +293,7 @@
     <!-- Modal Detail & Approval -->
     <div id="imageModal" class="fixed inset-0 z-[100] modal-overlay hidden flex items-center justify-center p-2 sm:p-4">
         <div class="relative max-w-4xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[95vh]">
-            <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full z-10 transition-transform active:scale-90">
+            <button onclick="window.closeModal()" class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full z-10 transition-transform active:scale-90">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
             <div class="md:w-2/3 bg-slate-100 flex items-center justify-center p-4">
@@ -346,12 +333,12 @@
         </div>
     </div>
 
-    <!-- Confirmation Modals -->
-    <div id="confirmDeleteModal" class="fixed inset-0 z-[300] modal-overlay hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800">Hapus Data?</h3><div class="flex gap-3"><button onclick="window.closeDeleteModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl hover:bg-slate-200 transition-all text-slate-500">Batal</button><button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 text-white font-black rounded-2xl transition-all">Hapus</button></div></div>
-    </div>
+    <!-- Modals Utility -->
     <div id="confirmDeleteWorkerModal" class="fixed inset-0 z-[300] modal-overlay hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800">Hapus Pekerja?</h3><p class="text-sm text-slate-500 mb-6 leading-relaxed">Apakah anda yakin ingin menghapus pekerja ini?</p><div class="flex gap-3"><button onclick="window.closeDeleteWorkerModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl hover:bg-slate-200 transition-all text-slate-500">Batal</button><button id="btnConfirmDeleteWorker" class="flex-1 py-3 bg-amber-600 text-white font-black rounded-2xl hover:bg-amber-700 transition-all text-white">Ya, Hapus</button></div></div>
+    </div>
+    <div id="confirmDeleteModal" class="fixed inset-0 z-[300] modal-overlay hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800">Hapus Data?</h3><div class="flex gap-3"><button onclick="window.closeDeleteModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl hover:bg-slate-200 transition-all text-slate-500">Batal</button><button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 text-white font-black rounded-2xl hover:bg-red-700 transition-all">Hapus</button></div></div>
     </div>
 
     <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 p-4 rounded-2xl shadow-2xl z-[500] text-[10px] font-black flex transition-all transform translate-y-24 opacity-0 items-center"><span id="toastMessage"></span></div>
@@ -408,10 +395,6 @@
             const subtitle = document.getElementById('modeSubTitle');
             const authActions = document.getElementById('authActions');
             const guestLoginBtn = document.getElementById('guestLoginBtn');
-            const hamburgerBtn = document.getElementById('hamburgerBtn');
-            const mobileDrawer = document.getElementById('mobileDrawer');
-            const logoutBtnDesktop = document.getElementById('logoutBtnDesktop');
-            const earningsCard = document.getElementById('earningsCard');
             const loginSection = document.getElementById('loginSection');
             const workerManagerCard = document.getElementById('workerManagerCard');
             const uploadCard = document.getElementById('uploadCard');
@@ -425,11 +408,9 @@
             if (ghConfig.active) {
                 subtitle.innerText = ghConfig.role === 'boss' ? 'MODE BOS' : 'MODE PEKERJA';
                 authActions.classList.remove('hidden');
-                if (logoutBtnDesktop) logoutBtnDesktop.classList.remove('hidden');
-                if (hamburgerBtn) hamburgerBtn.classList.add('md:hidden'); 
-
                 guestLoginBtn.classList.add('hidden');
                 loginSection.classList.add('hidden'); 
+                
                 if (historyPanel) historyPanel.classList.remove('hidden');
                 
                 if (earningsCard) earningsCard.classList.toggle('hidden', ghConfig.role !== 'worker');
@@ -442,9 +423,9 @@
             } else {
                 subtitle.innerText = 'MODE TAMU';
                 authActions.classList.add('hidden');
-                if (mobileDrawer) mobileDrawer.classList.add('hidden');
                 guestLoginBtn.classList.remove('hidden');
                 loginSection.classList.remove('hidden'); 
+                
                 if (historyPanel) historyPanel.classList.add('hidden');
                 
                 if (earningsCard) earningsCard.classList.add('hidden');
@@ -458,17 +439,9 @@
         };
 
         window.addEventListener('scroll', () => {
-            const d = document.getElementById('mobileDrawer');
             const n = document.getElementById('notifDropdown');
-            if (d && !d.classList.contains('hidden')) d.classList.add('hidden');
             if (n && !n.classList.contains('hidden')) n.classList.add('hidden');
         });
-
-        window.toggleMobileMenu = () => {
-            const d = document.getElementById('mobileDrawer');
-            if (!d) return;
-            d.classList.toggle('hidden');
-        };
 
         window.scrollToLogin = () => {
             const el = document.getElementById('loginSection');
@@ -487,9 +460,9 @@
             const container = document.getElementById('whitelistContainer');
             if (!container) return;
             container.innerHTML = workerWhitelist.map(name => `
-                <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm mb-2 transition-all hover:border-blue-200">
+                <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm transition-all hover:border-blue-200 mb-2">
                     <span class="text-xs font-black text-slate-700">${name}</span>
-                    <button onclick="window.removeWorkerFromWhitelist('${name}')" class="text-red-400 hover:text-red-600 p-2 transition-all"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
+                    <button onclick="window.removeWorkerFromWhitelist('${name}')" class="text-red-400 hover:text-red-600 p-2"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
                 </div>
             `).join('');
         };
@@ -508,7 +481,7 @@
         document.getElementById('btnConfirmDeleteWorker').onclick = async () => {
             if (!workerToDelete) return;
             const newList = workerWhitelist.filter(n => n !== workerToDelete);
-            try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), { names: newList }); showToast("Hapus berhasil."); window.closeDeleteWorkerModal(); } catch (e) { showToast("Gagal.", "error"); }
+            try { await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), { names: newList }); showToast("Riwayat dihapus."); window.closeDeleteWorkerModal(); } catch (e) { showToast("Gagal.", "error"); }
         };
 
         const updateNotifications = () => {
@@ -677,7 +650,6 @@
             const n = document.getElementById('workerName').value.trim();
             const t = document.getElementById('ghToken').value.trim();
 
-            // REVISI: Validasi input kosong (Nama & Token memerah dan bergetar)
             if (r === 'worker' && (!n || !t)) {
                 if (!n) triggerFail('workerName');
                 if (!t) triggerFail('ghToken');
@@ -688,20 +660,15 @@
                 if (!t) triggerFail('ghToken');
                 return showToast("Mohon isi Kode Bos dan Token.", "error");
             }
-
-            // Validasi Kode Bos
             if (r === 'boss' && c !== BOSS_SECRET) {
                 triggerFail('bossCode');
                 return showToast("Kode Bos Salah!", "error");
             }
-
-            // REVISI: Validasi format token (Wajib ghp_ dan minimal 40 karakter)
             if (!t.startsWith('ghp_') || t.length < 40) {
                 triggerFail('ghToken');
                 return showToast("Token tidak valid!", "error");
             }
 
-            // Validasi Whitelist Worker
             if (r === 'worker') { 
                 const ds = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist')); 
                 if (!ds.exists() || !(ds.data().names || []).includes(n)) {
@@ -716,7 +683,6 @@
             location.reload();
         };
 
-        // REVISI: Efek visual kolom bergetar DAN memerah (bg-red-100) saat gagal
         function triggerFail(id) {
             const el = document.getElementById(id);
             if (!el) return;
@@ -751,7 +717,7 @@
             r.readAsDataURL(f);
         };
 
-        window.handleLogout = () => { localStorage.removeItem('gh_config_simple'); location.reload(); };
+        window.handle = () => { localStorage.removeItem('gh_config_simple'); location.reload(); };
 
         const showToast = (msg, type = 'success') => { const t = document.getElementById('toast'); if (!t) return; document.getElementById('toastMessage').innerText = msg; t.className = `fixed bottom-6 left-1/2 -translate-x-1/2 p-4 rounded-2xl shadow-2xl z-[500] text-[10px] font-black flex transition-all transform items-center ${type === 'error' ? 'bg-red-600' : 'bg-slate-900'} text-white shadow-xl`; t.classList.remove('translate-y-24', 'opacity-0'); setTimeout(() => t.classList.add('translate-y-24', 'opacity-0'), 3000); };
 
