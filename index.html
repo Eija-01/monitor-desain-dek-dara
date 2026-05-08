@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
         
         .gradient-bg { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); }
         .glass-card { background: rgba(255, 255, 255, 0.98); backdrop-filter: blur(10px); }
@@ -38,10 +38,9 @@
             display: inline-block;
             transition: all 0.2s;
             position: relative;
-            overflow: hidden;
+            overflow: hidden !important;
         }
 
-        /* Grade S Shimmering & Luxury */
         .grade-S { 
             background: linear-gradient(135deg, #10b981 0%, #34d399 50%, #10b981 100%);
             background-size: 200% auto;
@@ -58,12 +57,19 @@
         .grade-S::after {
             content: "";
             position: absolute;
-            top: -50%; left: -60%; width: 20%; height: 200%;
-            background: rgba(255, 255, 255, 0.4);
+            top: -100%; left: -150%; width: 50%; height: 300%;
+            background: rgba(255, 255, 255, 0.3);
             transform: rotate(30deg);
-            animation: sweep 4s infinite;
+            animation: sweep 3s infinite;
         }
-        @keyframes sweep { 0% { left: -60%; } 20% { left: 120%; } 100% { left: 120%; } }
+        @keyframes sweep { 0% { left: -150%; } 30% { left: 150%; } 100% { left: 150%; } }
+
+        .grade-selected {
+            ring: 4px solid #3b82f6 !important;
+            outline: 2px solid white;
+            transform: scale(1.1);
+            z-index: 10;
+        }
 
         .grade-A { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; } 
         .grade-B { background: #dbeafe; color: #1d4ed8; border: 1px solid #93c5fd; } 
@@ -71,29 +77,35 @@
         .grade-D { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; } 
         .grade-pending { background: #fef9c3; color: #ca8a04; border: 1px solid #fde047; }
         .grade-rejected { background: #475569; color: white; border: 1px solid #334155; }
-        .grade-none { background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0; }
 
         .modal-overlay { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(4px); }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 640px) {
+            .mobile-stack { flex-direction: column; }
+            .mobile-hide { display: none; }
+        }
     </style>
 </head>
 <body class="bg-slate-50 min-h-screen pb-12 text-slate-900">
 
+    <!-- Navigasi Adaptif -->
     <nav class="gradient-bg text-white shadow-xl p-4 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="bg-blue-600 p-2 rounded-xl shadow-lg shadow-blue-900/20">
+                <div class="bg-blue-600 p-2 rounded-xl shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
                 </div>
                 <div>
-                    <h1 class="text-xl font-extrabold tracking-tight leading-none">WorkerPanel <span class="text-blue-400">Pro</span></h1>
-                    <p id="roleTitle" class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Memuat...</p>
+                    <h1 class="text-lg sm:text-xl font-extrabold tracking-tight leading-none">WorkerPanel <span class="text-blue-400">Pro</span></h1>
+                    <p id="roleTitle" class="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">Memuat...</p>
                 </div>
             </div>
             
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2 sm:gap-4">
                 <!-- Notifikasi Lonceng -->
                 <div id="notifArea" class="relative hidden">
                     <button onclick="window.toggleNotifDropdown()" class="p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-all relative">
@@ -101,36 +113,49 @@
                         <span id="notifBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[9px] font-black w-5 h-5 flex items-center justify-center rounded-full border-2 border-slate-900 hidden notif-pulse">0</span>
                     </button>
                     <div id="notifDropdown" class="absolute right-0 mt-4 w-72 bg-white rounded-2xl shadow-2xl border border-slate-100 hidden overflow-hidden z-[60]">
-                        <div class="p-4 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
-                            <h4 class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Notifikasi</h4>
-                        </div>
+                        <div class="p-4 bg-slate-50 border-b border-slate-100"><h4 class="text-[10px] font-black uppercase text-slate-400 tracking-widest">Notifikasi</h4></div>
                         <div id="notifList" class="max-h-80 overflow-y-auto divide-y divide-slate-50"></div>
                     </div>
                 </div>
 
-                <div id="connectionStatus" onclick="window.handleStatusClick()" class="text-[9px] sm:text-xs bg-red-600 text-white border border-red-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter transition-all duration-300 cursor-pointer">
-                    BELUM LOGIN
+                <!-- Desktop Info & Logout -->
+                <div id="desktopActions" class="hidden md:flex items-center gap-3">
+                    <div id="connectionStatus" onclick="window.handleStatusClick()" class="text-[10px] bg-red-600 text-white border border-red-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter transition-all cursor-pointer">
+                        BELUM LOGIN
+                    </div>
+                    <button id="logoutBtn" onclick="window.handleLogout()" class="hidden text-[10px] bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full font-bold uppercase transition-all border border-white/20">
+                        LOGOUT
+                    </button>
                 </div>
-                <button id="logoutBtn" onclick="window.handleLogout()" class="hidden text-[9px] sm:text-xs bg-white/10 hover:bg-white/20 text-white px-3 py-1 rounded-full font-bold uppercase transition-all border border-white/20 active:scale-95">
-                    LOGOUT
+
+                <!-- Mobile Hamburger Menu Button -->
+                <button onclick="window.toggleMobileMenu()" class="md:hidden p-2 bg-slate-800 rounded-lg">
+                    <svg id="hamburgerIcon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
                 </button>
             </div>
         </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobileDrawer" class="md:hidden hidden pt-4 border-t border-white/10 mt-4 space-y-3">
+            <div id="mobileStatus" onclick="window.handleStatusClick()" class="w-full text-center py-3 rounded-xl font-black text-xs uppercase bg-red-600">BELUM LOGIN</div>
+            <button id="mobileLogoutBtn" onclick="window.handleLogout()" class="hidden w-full text-center py-3 rounded-xl font-black text-xs uppercase bg-white/10 border border-white/20">LOGOUT SISTEM</button>
+        </div>
     </nav>
 
-    <main class="max-w-7xl mx-auto px-4 mt-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <main class="max-w-7xl mx-auto px-4 mt-6 sm:mt-8">
+        <!-- Dashboard Stats -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-8">
             <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200">
-                <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Total Pekerjaan</p>
-                <div class="flex items-baseline mt-2">
+                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest text-center sm:text-left">Total Pekerjaan</p>
+                <div class="flex items-baseline justify-center sm:justify-start mt-2">
                     <span id="fileCount" class="text-4xl font-black text-slate-800">0</span>
                     <span class="ml-2 text-slate-400 font-bold text-sm italic">File</span>
                 </div>
             </div>
 
             <div id="earningsCard" class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200 bg-blue-50/50 hidden">
-                <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Estimasi Pendapatan</p>
-                <div class="flex items-baseline mt-2 text-blue-700">
+                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest text-center sm:text-left">Estimasi Pendapatan</p>
+                <div class="flex items-baseline justify-center sm:justify-start mt-2 text-blue-700">
                     <span class="text-xl font-extrabold mr-1">Rp</span>
                     <span id="totalEarnings" class="text-4xl font-black">0</span>
                 </div>
@@ -138,34 +163,30 @@
             </div>
 
             <div class="glass-card p-6 rounded-3xl shadow-sm border border-slate-200">
-                <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Identitas</p>
-                <div class="mt-3">
+                <p class="text-slate-500 text-[10px] font-bold uppercase tracking-widest text-center sm:text-left">Identitas</p>
+                <div class="mt-3 text-center sm:text-left">
                     <p id="displayWorkerNameTop" class="text-xl font-black text-slate-800 truncate">-</p>
-                    <div class="flex items-center gap-2 mt-2">
-                        <div id="syncPulse" class="w-2 h-2 rounded-full bg-red-500 transition-all"></div>
-                        <p id="syncStatusText" class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Offline</p>
+                    <div class="flex items-center justify-center sm:justify-start gap-2 mt-2">
+                        <div id="syncPulse" class="w-2 h-2 rounded-full bg-red-500"></div>
+                        <p id="syncStatusText" class="text-[10px] text-slate-400 font-bold uppercase">Offline</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div class="lg:col-span-4 space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8">
+            <div class="lg:col-span-4 space-y-6 order-2 lg:order-1">
                 <!-- Akses Panel -->
                 <div id="accessPanelCard" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm transition-all duration-300">
                     <h2 class="text-xs font-black mb-4 text-slate-400 uppercase tracking-widest">Akses Panel</h2>
                     <div class="space-y-4">
-                        <select id="roleSelect" onchange="window.toggleRoleUI()" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none">
+                        <select id="roleSelect" onchange="window.toggleRoleUI()" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold outline-none">
                             <option value="worker">PEKERJA</option>
                             <option value="boss">BOS / OWNER</option>
                         </select>
-                        <div id="bossCodeArea" class="hidden">
-                            <input type="password" id="bossCode" placeholder="Kode Akses Bos" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-red-50 font-bold">
-                        </div>
-                        <div id="nameInputArea">
-                            <input type="text" id="workerName" placeholder="Nama Anda" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold">
-                        </div>
-                        <input type="password" id="ghToken" placeholder="Personal Access Token (GitHub)" class="w-full p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold">
+                        <div id="bossCodeArea" class="hidden"><input type="password" id="bossCode" placeholder="Kode Akses Bos" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-red-50 font-bold"></div>
+                        <div id="nameInputArea"><input type="text" id="workerName" placeholder="Nama Anda" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold"></div>
+                        <input type="password" id="ghToken" placeholder="Personal Access Token (GitHub)" class="w-full p-4 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold">
                         <button id="btnLogin" onclick="saveConfig()" class="w-full bg-slate-900 text-white text-[11px] font-black py-4 rounded-2xl hover:bg-black transition-all active:scale-95 uppercase tracking-widest">Login Sistem</button>
                     </div>
                 </div>
@@ -176,13 +197,13 @@
                     <div class="space-y-3">
                         <div class="flex gap-2">
                             <input type="text" id="newWorkerName" placeholder="Nama baru..." class="flex-1 p-3 text-xs border border-slate-200 rounded-xl bg-slate-50 font-bold">
-                            <button onclick="window.addWorkerToWhitelist()" class="bg-blue-600 text-white px-4 rounded-xl font-black">+</button>
+                            <button onclick="window.addWorkerToWhitelist()" class="bg-blue-600 text-white px-5 rounded-xl font-black">+</button>
                         </div>
                         <div id="whitelistContainer" class="space-y-2"></div>
                     </div>
                 </div>
 
-                <!-- Upload Area -->
+                <!-- Upload Area (Worker Only) -->
                 <div id="uploadCard" class="glass-card p-6 rounded-3xl border border-slate-200 shadow-sm hidden">
                     <h2 class="text-xs font-black mb-4 text-slate-400 uppercase tracking-widest">Upload Pekerjaan</h2>
                     <label class="group relative flex flex-col items-center justify-center w-full h-44 border-2 border-dashed border-slate-200 rounded-3xl hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer bg-slate-50">
@@ -190,37 +211,37 @@
                             <div class="bg-white p-4 rounded-2xl shadow-sm mb-3 text-slate-400 group-hover:text-blue-500">
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
                             </div>
-                            <p class="text-xs text-slate-600 font-extrabold group-hover:text-blue-700">Upload Hasil Desain</p>
+                            <p class="text-xs text-slate-600 font-extrabold">Upload Hasil Desain</p>
                         </div>
                         <input type="file" id="fileInput" class="hidden" accept="image/*" onchange="handleFileUpload(event)">
-                        <div id="uploadProgress" class="absolute inset-0 bg-white/95 hidden items-center justify-center flex-col gap-3">
+                        <div id="uploadProgress" class="absolute inset-0 bg-white/95 hidden items-center justify-center flex-col gap-3 rounded-3xl">
                             <div class="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent"></div>
-                            <p class="text-[10px] font-black text-blue-600 animate-pulse uppercase tracking-widest">Sinkronisasi...</p>
+                            <p class="text-[10px] font-black text-blue-600 animate-pulse uppercase">Sync Cloud...</p>
                         </div>
                     </label>
                 </div>
             </div>
 
             <!-- Main Area -->
-            <div class="lg:col-span-8 space-y-8">
-                <div class="glass-card rounded-3xl shadow-sm border border-slate-200 p-6">
-                    <h2 class="text-lg font-black text-slate-800 tracking-tight mb-6">Galeri Hasil Kerja</h2>
+            <div class="lg:col-span-8 space-y-6 sm:space-y-8 order-1 lg:order-2">
+                <div class="glass-card rounded-3xl shadow-sm border border-slate-200 p-4 sm:p-6">
+                    <h2 class="text-lg font-black text-slate-800 tracking-tight mb-6">Galeri Desain</h2>
                     <div id="galleryContainer" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3"></div>
-                    <div id="galleryEmpty" class="py-12 text-center text-slate-400 italic text-xs font-medium">Belum ada desain yang diunggah.</div>
+                    <div id="galleryEmpty" class="py-12 text-center text-slate-400 italic text-xs font-medium">Belum ada desain.</div>
                 </div>
 
                 <div class="glass-card rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                    <div class="p-6 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
-                        <h2 class="text-lg font-black text-slate-800 tracking-tight">Riwayat Penilaian</h2>
-                        <span id="badgeMode" class="text-[10px] font-black px-3 py-1 bg-slate-200 rounded-full text-slate-500 uppercase tracking-widest">-</span>
+                    <div class="p-5 border-b border-slate-50 bg-slate-50/50 flex justify-between items-center">
+                        <h2 class="text-md sm:text-lg font-black text-slate-800 tracking-tight text-xs sm:text-base">Riwayat Penilaian</h2>
+                        <span id="badgeMode" class="text-[9px] sm:text-[10px] font-black px-3 py-1 bg-slate-200 rounded-full text-slate-500 uppercase tracking-widest">-</span>
                     </div>
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left text-sm">
+                        <table class="w-full text-left text-sm whitespace-nowrap">
                             <thead class="bg-slate-50 text-slate-400 text-[10px] uppercase font-black tracking-widest border-b">
                                 <tr>
                                     <th class="px-6 py-4">Waktu</th>
-                                    <th class="px-6 py-4">Nama Pekerja</th>
-                                    <th class="px-6 py-4">Status & Grade</th>
+                                    <th class="px-6 py-4">Pekerja</th>
+                                    <th class="px-6 py-4 text-center">Status/Grade</th>
                                     <th class="px-6 py-4 text-right">Gaji</th>
                                 </tr>
                             </thead>
@@ -232,11 +253,11 @@
         </div>
     </main>
 
-    <!-- Modal Konfirmasi Upload (Grade S Shimmer & Grid D) -->
-    <div id="uploadConfirmModal" class="fixed inset-0 z-[250] modal-overlay hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-lg w-full shadow-2xl overflow-y-auto max-h-[90vh]">
-            <h3 class="text-xl font-black text-slate-800 mb-2">Konfirmasi Pekerjaan</h3>
-            <p class="text-sm text-slate-500 mb-6">Pratinjau hasil kerja Anda sebelum dikirim.</p>
+    <!-- Modal Konfirmasi Upload -->
+    <div id="uploadConfirmModal" class="fixed inset-0 z-[250] modal-overlay hidden flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl overflow-y-auto max-h-[95vh]">
+            <h3 class="text-xl font-black text-slate-800 mb-1">Konfirmasi Pekerjaan</h3>
+            <p class="text-xs text-slate-500 mb-6">Pastikan nama sudah sesuai instruksi Bos.</p>
             
             <div class="space-y-4">
                 <div class="w-full aspect-video bg-slate-100 rounded-2xl overflow-hidden border border-slate-200 mb-4">
@@ -244,120 +265,88 @@
                 </div>
                 <div>
                     <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Nama Pekerjaan/File:</label>
-                    <input type="text" id="inputCustomFileName" placeholder="Contoh: Desain Banner Promo" class="w-full p-4 text-sm border border-slate-200 rounded-2xl bg-slate-50 outline-none font-bold focus:ring-2 focus:ring-blue-500 transition-all">
-                    <p class="text-[9px] text-slate-400 mt-2 italic font-bold tracking-tighter normal-case">*Wajib: Gunakan Huruf Kapital di awal setiap kata. Contoh: "Flyer Design"</p>
+                    <input type="text" id="inputCustomFileName" placeholder="Contoh: Desain Banner Promo" class="w-full p-4 text-sm border border-slate-200 rounded-xl bg-slate-50 outline-none font-bold focus:ring-2 focus:ring-blue-500 transition-all">
+                    <p class="text-[9px] text-slate-400 mt-2 italic font-bold tracking-tighter">*Wajib: Gunakan Huruf Kapital di awal setiap kata. Contoh: "Flyer Design"</p>
                 </div>
 
-                <div class="p-5 bg-blue-50/50 rounded-2xl border border-blue-100 space-y-3">
-                    <p class="text-[11px] font-black text-blue-700 uppercase tracking-wider">Ketentuan Kualitas & Gaji:</p>
-                    <p class="text-[10px] font-bold text-slate-600 italic">"Pastikan desain anda merupakan hasil HD dengan kualitas terbaik untuk disetujui."</p>
-                    
+                <div class="p-4 sm:p-5 bg-blue-50/50 rounded-2xl border border-blue-100 space-y-3">
+                    <p class="text-[10px] sm:text-[11px] font-black text-blue-700 uppercase tracking-wider text-center sm:text-left">Ketentuan Kualitas & Gaji:</p>
                     <div class="grid grid-cols-2 gap-2">
-                        <!-- Grade S: Menonjol Full Width dengan Shimmer -->
                         <div class="flex justify-between items-center p-3 px-4 rounded-xl col-span-2 grade-S shadow-lg">
-                            <span class="text-[10px] font-black tracking-widest uppercase">Grade S (Kualitas HD Terbaik)</span>
-                            <span class="text-[12px] font-extrabold">Rp 5.000</span>
+                            <span class="text-[9px] font-black tracking-widest uppercase">Grade S (Kualitas HD Terbaik)</span>
+                            <span class="text-[11px] font-extrabold">Rp 5.000</span>
                         </div>
-                        
-                        <!-- Grade Lainnya -->
-                        <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100">
-                            <span class="text-[10px] font-black text-emerald-600">Grade A</span>
-                            <span class="text-[10px] font-bold text-slate-500">Rp 4.000</span>
-                        </div>
-                        <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100">
-                            <span class="text-[10px] font-black text-blue-600">Grade B</span>
-                            <span class="text-[10px] font-bold text-slate-500">Rp 3.000</span>
-                        </div>
-                        <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100">
-                            <span class="text-[10px] font-black text-amber-600">Grade C</span>
-                            <span class="text-[10px] font-bold text-slate-500">Rp 2.000</span>
-                        </div>
-                        <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100">
-                            <span class="text-[10px] font-black text-red-600">Grade D</span>
-                            <span class="text-[10px] font-bold text-slate-500">Rp 1.000</span>
-                        </div>
-                    </div>
-
-                    <div class="pt-2 border-t border-blue-100 text-[9px] text-slate-500 font-bold leading-relaxed">
-                        <span class="text-red-500">Note:</span> Desain bisa dihapus Bos jika kurang menarik. Anda dapat upload ulang versi terbaik untuk meningkatkan Grade anda.
+                        <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[9px] font-black text-emerald-600">Grade A</span><span class="text-[9px] font-bold text-slate-500">Rp 4.000</span></div>
+                        <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[9px] font-black text-blue-600">Grade B</span><span class="text-[9px] font-bold text-slate-500">Rp 3.000</span></div>
+                        <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[9px] font-black text-amber-600">Grade C</span><span class="text-[9px] font-bold text-slate-500">Rp 2.000</span></div>
+                        <div class="flex justify-between items-center bg-white p-2 px-3 rounded-lg border border-slate-100"><span class="text-[9px] font-black text-red-600">Grade D</span><span class="text-[9px] font-bold text-slate-500">Rp 1.000</span></div>
                     </div>
                 </div>
 
                 <div class="flex gap-3 pt-2">
                     <button onclick="window.closeUploadConfirm()" class="flex-1 py-4 bg-slate-100 text-slate-600 font-bold rounded-2xl">Batal</button>
-                    <button id="btnSubmitUpload" onclick="window.submitFinalUpload()" class="flex-1 py-4 bg-blue-600 text-white font-black rounded-2xl active:scale-95 shadow-lg shadow-blue-200">Upload Sekarang</button>
+                    <button id="btnSubmitUpload" onclick="window.submitFinalUpload()" class="flex-1 py-4 bg-blue-600 text-white font-black rounded-2xl active:scale-95 shadow-lg">Upload</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Detail & Approval -->
-    <div id="imageModal" class="fixed inset-0 z-[100] modal-overlay hidden flex items-center justify-center p-4">
-        <div class="relative max-w-4xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl">
-            <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full z-10">
+    <!-- Modal Detail & Approval Adaptif -->
+    <div id="imageModal" class="fixed inset-0 z-[100] modal-overlay hidden flex items-center justify-center p-2 sm:p-4">
+        <div class="relative max-w-4xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row max-h-[95vh]">
+            <button onclick="closeModal()" class="absolute top-4 right-4 bg-black/50 text-white p-2 rounded-full z-10 transition-transform active:scale-90">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
             </button>
-            <div class="flex flex-col md:flex-row">
-                <div class="md:w-2/3 bg-slate-100 flex items-center justify-center p-4">
-                    <img id="modalImage" src="" class="max-h-[70vh] object-contain rounded-xl shadow-lg">
+            <div class="md:w-2/3 bg-slate-100 flex items-center justify-center p-4">
+                <img id="modalImage" src="" class="max-h-[40vh] md:max-h-[70vh] object-contain rounded-xl shadow-lg">
+            </div>
+            <div class="md:w-1/3 p-6 sm:p-8 flex flex-col justify-start overflow-y-auto">
+                <h3 id="modalWorkerName" class="text-xl sm:text-2xl font-black text-slate-800 mb-1">-</h3>
+                <p id="modalDate" class="text-[10px] text-slate-400 font-bold mb-6 uppercase tracking-widest">-</p>
+                
+                <div id="statusInfoArea" class="space-y-4 border-t border-slate-100 pt-6">
+                    <div class="flex justify-between items-center"><span class="text-[9px] font-bold text-slate-400 uppercase">Status</span><div id="detailStatusBadge"></div></div>
+                    <div class="flex justify-between items-center"><span class="text-[9px] font-bold text-slate-400 uppercase">Pekerja</span><span id="detailWorker" class="text-xs font-black text-slate-700">-</span></div>
+                    <div id="detailGradeArea" class="flex justify-between items-center hidden"><span class="text-[9px] font-bold text-slate-400 uppercase">Grade</span><div id="detailGradeContainer"></div></div>
+                    <div class="flex justify-between items-center border-t border-slate-50 pt-4"><span class="text-[9px] font-bold text-slate-400 uppercase">Gaji</span><span id="detailEarnings" class="text-sm font-black text-green-600 italic">Rp 0</span></div>
+                    <div id="bossNoteArea" class="hidden pt-4 border-t border-slate-100"><label class="text-[9px] font-black text-blue-600 uppercase block mb-1">Catatan Bos:</label><p id="detailBossNote" class="text-xs font-bold text-slate-500 italic bg-slate-50 p-3 rounded-xl border border-slate-100"></p></div>
                 </div>
-                <div class="md:w-1/3 p-8 flex flex-col justify-center overflow-y-auto max-h-[90vh]">
-                    <h3 id="modalWorkerName" class="text-2xl font-black text-slate-800 mb-1">-</h3>
-                    <p id="modalDate" class="text-xs text-slate-400 font-bold mb-6 uppercase tracking-widest">-</p>
-                    
-                    <div id="statusInfoArea" class="space-y-4 border-t border-slate-100 pt-6">
-                        <div class="flex justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase">Status</span><div id="detailStatusBadge"></div></div>
-                        <div class="flex justify-between items-center"><span class="text-[10px] font-bold text-slate-400 uppercase">Pekerja</span><span id="detailWorker" class="text-xs font-black text-slate-700">-</span></div>
-                        <div id="detailGradeArea" class="flex justify-between items-center hidden"><span class="text-[10px] font-bold text-slate-400 uppercase">Grade</span><div id="detailGradeContainer"></div></div>
-                        <div class="flex justify-between items-center border-t border-slate-50 pt-4"><span class="text-[10px] font-bold text-slate-400 uppercase">Gaji</span><span id="detailEarnings" class="text-sm font-black text-green-600 italic">Rp 0</span></div>
-                        <div id="bossNoteArea" class="hidden pt-4 border-t border-slate-100"><label class="text-[10px] font-black text-blue-600 uppercase block mb-1">Catatan Bos:</label><p id="detailBossNote" class="text-xs font-bold text-slate-500 italic bg-slate-50 p-3 rounded-xl border border-slate-100"></p></div>
-                    </div>
 
-                    <!-- Mode Persetujuan -->
-                    <div id="approvalActionsArea" class="hidden mt-8 border-t border-slate-100 pt-6 space-y-4">
-                        <div class="grid grid-cols-2 gap-3">
-                            <button id="btnApprove" onclick="window.prepareApproval('approved')" class="py-3 bg-green-600 text-white font-black rounded-xl text-xs uppercase">Setujui</button>
-                            <button id="btnReject" onclick="window.prepareApproval('rejected')" class="py-3 bg-red-600 text-white font-black rounded-xl text-xs uppercase">Tolak</button>
-                        </div>
-                        <div id="approvalForm" class="hidden space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                            <div id="gradeSelector" class="hidden">
-                                <label class="text-[10px] font-black text-slate-400 uppercase block mb-2">Pilih Grade:</label>
-                                <div class="grid grid-cols-5 gap-2">
-                                    <button onclick="window.selectedApprovalGrade = 'S'" class="grade-badge grade-S py-3 text-[10px]">S</button>
-                                    <button onclick="window.selectedApprovalGrade = 'A'" class="grade-badge grade-A py-3 text-[10px]">A</button>
-                                    <button onclick="window.selectedApprovalGrade = 'B'" class="grade-badge grade-B py-3 text-[10px]">B</button>
-                                    <button onclick="window.selectedApprovalGrade = 'C'" class="grade-badge grade-C py-3 text-[10px]">C</button>
-                                    <button onclick="window.selectedApprovalGrade = 'D'" class="grade-badge grade-D py-3 text-[10px]">D</button>
-                                </div>
+                <!-- Approval Actions -->
+                <div id="approvalActionsArea" class="hidden mt-8 border-t border-slate-100 pt-6 space-y-4">
+                    <div class="grid grid-cols-2 gap-3">
+                        <button id="btnApprove" onclick="window.prepareApproval('approved')" class="py-3 bg-green-600 text-white font-black rounded-xl text-[10px] uppercase">Setujui</button>
+                        <button id="btnReject" onclick="window.prepareApproval('rejected')" class="py-3 bg-red-600 text-white font-black rounded-xl text-[10px] uppercase">Tolak</button>
+                    </div>
+                    <div id="approvalForm" class="hidden space-y-4 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                        <div id="gradeSelector" class="hidden">
+                            <label class="text-[10px] font-black text-slate-400 uppercase block mb-2">Grade:</label>
+                            <div class="grid grid-cols-5 gap-1" id="approvalGradeButtons">
+                                <button onclick="window.selectGrade('S', this)" class="grade-badge grade-S py-3 text-[10px]">S</button>
+                                <button onclick="window.selectGrade('A', this)" class="grade-badge grade-A py-3 text-[10px]">A</button>
+                                <button onclick="window.selectGrade('B', this)" class="grade-badge grade-B py-3 text-[10px]">B</button>
+                                <button onclick="window.selectGrade('C', this)" class="grade-badge grade-C py-3 text-[10px]">C</button>
+                                <button onclick="window.selectGrade('D', this)" class="grade-badge grade-D py-3 text-[10px]">D</button>
                             </div>
-                            <textarea id="approvalNote" class="w-full p-3 text-xs border border-slate-200 rounded-xl font-bold outline-none h-20" placeholder="Tulis catatan..."></textarea>
-                            <button id="btnSubmitFinalDecision" onclick="window.submitApproval()" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl text-xs uppercase">Kirim Keputusan</button>
                         </div>
+                        <textarea id="approvalNote" class="w-full p-3 text-xs border border-slate-200 rounded-xl font-bold outline-none h-20" placeholder="Tulis catatan..."></textarea>
+                        <button id="btnSubmitFinalDecision" onclick="window.submitApproval()" class="w-full py-4 bg-slate-900 text-white font-black rounded-xl text-[10px] uppercase">Kirim Keputusan</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Hapus Pekerja -->
-    <div id="confirmDeleteWorkerModal" class="fixed inset-0 z-[200] modal-overlay hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
-            <h3 class="text-lg font-black text-slate-800 mb-2">Hapus Pekerja?</h3>
-            <p class="text-sm text-slate-500 mb-8 leading-relaxed">Apakah anda yakin ingin menghapus pekerja ini?</p>
-            <div class="flex gap-3"><button onclick="window.closeDeleteWorkerModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl">Batal</button><button id="btnConfirmDeleteWorker" class="flex-1 py-3 bg-amber-600 text-white font-black rounded-2xl hover:bg-amber-700 transition-all">Ya, Hapus</button></div>
-        </div>
+    <!-- Modals Utility -->
+    <div id="confirmDeleteWorkerModal" class="fixed inset-0 z-[300] modal-overlay hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800">Hapus Pekerja?</h3><p class="text-sm text-slate-500 mb-6">Apakah anda yakin ingin menghapus pekerja ini?</p><div class="flex gap-3"><button onclick="window.closeDeleteWorkerModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl">Batal</button><button id="btnConfirmDeleteWorker" class="flex-1 py-3 bg-amber-600 text-white font-black rounded-2xl">Ya, Hapus</button></div></div>
     </div>
 
-    <!-- Modal Hapus Log -->
-    <div id="confirmDeleteModal" class="fixed inset-0 z-[200] modal-overlay hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 max-sm w-full shadow-2xl text-center">
-            <h3 class="text-xl font-black text-slate-800 mb-2">Hapus Data?</h3>
-            <p class="text-sm text-slate-500 mb-8">Data akan dihapus permanen.</p>
-            <div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl">Batal</button><button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 text-white font-black rounded-2xl">Hapus</button></div>
-        </div>
+    <div id="confirmDeleteModal" class="fixed inset-0 z-[300] modal-overlay hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center"><h3 class="text-xl font-black mb-2 text-slate-800">Hapus Data?</h3><div class="flex gap-3"><button onclick="closeDeleteModal()" class="flex-1 py-3 bg-slate-100 font-bold rounded-2xl">Batal</button><button id="btnConfirmDelete" class="flex-1 py-3 bg-red-600 text-white font-black rounded-2xl">Hapus</button></div></div>
     </div>
 
-    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 p-4 rounded-2xl shadow-2xl z-[350] text-xs font-black flex gap-3 transition-all transform translate-y-24 opacity-0 items-center"><span id="toastMessage"></span></div>
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 p-4 rounded-2xl shadow-2xl z-[500] text-[10px] font-black flex transition-all transform translate-y-24 opacity-0 items-center"><span id="toastMessage"></span></div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -400,15 +389,15 @@
             try {
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                } else { await signInAnonymously(auth); }
             } catch (err) { console.error(err); }
         };
 
         const updateLoginStatus = () => {
             const status = document.getElementById('connectionStatus');
+            const mobileStatus = document.getElementById('mobileStatus');
             const logoutBtn = document.getElementById('logoutBtn');
+            const mobileLogoutBtn = document.getElementById('mobileLogoutBtn');
             const accessPanelCard = document.getElementById('accessPanelCard');
             const earningsCard = document.getElementById('earningsCard');
             const workerManagerCard = document.getElementById('workerManagerCard');
@@ -417,9 +406,14 @@
             const syncText = document.getElementById('syncStatusText');
 
             if (ghConfig.active) {
-                status.innerText = ghConfig.role === 'boss' ? 'BOSS ROLE' : 'WORKER ROLE';
-                status.className = "text-[9px] sm:text-xs bg-green-600 text-white border border-green-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter cursor-default";
+                const label = ghConfig.role === 'boss' ? 'BOSS ROLE' : 'WORKER ROLE';
+                status.innerText = label;
+                mobileStatus.innerText = label;
+                status.className = "text-[10px] bg-green-600 text-white px-3 py-1 rounded-full font-black uppercase";
+                mobileStatus.className = "w-full text-center py-3 rounded-xl font-black text-xs uppercase bg-green-600";
+                
                 logoutBtn.classList.remove('hidden');
+                mobileLogoutBtn.classList.remove('hidden');
                 accessPanelCard.classList.add('hidden');
                 earningsCard.classList.toggle('hidden', ghConfig.role !== 'worker');
                 workerManagerCard.classList.toggle('hidden', ghConfig.role !== 'boss');
@@ -428,8 +422,9 @@
                 syncText.innerText = "Terhubung Cloud";
             } else {
                 status.innerText = "BELUM LOGIN"; 
-                status.className = "text-[9px] sm:text-xs bg-red-600 text-white border border-red-500 px-3 py-1 rounded-full font-black uppercase tracking-tighter transition-all duration-300 cursor-pointer hover:bg-red-700 active:scale-95";
+                mobileStatus.innerText = "BELUM LOGIN";
                 logoutBtn.classList.add('hidden');
+                mobileLogoutBtn.classList.add('hidden');
                 accessPanelCard.classList.remove('hidden'); 
                 earningsCard.classList.add('hidden');
                 workerManagerCard.classList.add('hidden');
@@ -437,6 +432,15 @@
                 syncPulse.className = "w-2 h-2 rounded-full bg-red-500";
                 syncText.innerText = "Offline";
             }
+        };
+
+        window.toggleMobileMenu = () => {
+            const drawer = document.getElementById('mobileDrawer');
+            const icon = document.getElementById('hamburgerIcon');
+            drawer.classList.toggle('hidden');
+            icon.innerHTML = drawer.classList.contains('hidden') ? 
+                '<line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>' :
+                '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>';
         };
 
         const subscribeToWhitelist = () => {
@@ -451,9 +455,9 @@
             const container = document.getElementById('whitelistContainer');
             if (!container) return;
             container.innerHTML = workerWhitelist.map(name => `
-                <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
+                <div class="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-100 shadow-sm transition-all hover:border-blue-200">
                     <span class="text-xs font-black text-slate-700">${name}</span>
-                    <button onclick="window.removeWorkerFromWhitelist('${name}')" class="text-red-400 hover:text-red-600 p-1">
+                    <button onclick="window.removeWorkerFromWhitelist('${name}')" class="text-red-400 hover:text-red-600 p-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                     </button>
                 </div>
@@ -464,12 +468,12 @@
             const input = document.getElementById('newWorkerName');
             const name = input.value.trim();
             if (!name) return;
-            if (workerWhitelist.includes(name)) return showToast("Nama sudah ada!", "error");
+            if (workerWhitelist.includes(name)) return showToast("Nama sudah terdaftar!", "error");
             const newList = [...workerWhitelist, name];
             try {
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), { names: newList });
                 input.value = "";
-                showToast("Pekerja Ditambahkan.");
+                showToast("Pekerja ditambahkan.");
             } catch (e) { showToast("Gagal update cloud.", "error"); }
         };
 
@@ -488,9 +492,9 @@
             const newList = workerWhitelist.filter(n => n !== workerToDelete);
             try {
                 await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'), { names: newList });
-                showToast("Pekerja Dihapus.");
+                showToast("Pekerja berhasil dihapus.");
                 window.closeDeleteWorkerModal();
-            } catch (e) { showToast("Gagal update cloud.", "error"); }
+            } catch (e) { showToast("Gagal update database.", "error"); }
         };
 
         const updateNotifications = () => {
@@ -503,14 +507,10 @@
                 list.innerHTML = notifs.map(n => `
                     <div onclick="window.openPreview('${n.id}'); window.toggleNotifDropdown()" class="p-4 hover:bg-blue-50 cursor-pointer border-b border-slate-50 last:border-0 transition-all">
                         <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
-                                <img src="${n.imageUrl}" class="w-full h-full object-cover">
-                            </div>
+                            <div class="w-10 h-10 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0"><img src="${n.imageUrl}" class="w-full h-full object-cover"></div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-[11px] font-black text-slate-800 truncate">${n.fileName || 'Desain'}</p>
-                                <p class="text-[9px] font-bold ${n.status === 'approved' ? 'text-green-600' : 'text-red-500'} uppercase">
-                                    ${n.status === 'approved' ? 'Disetujui (' + n.grade + ')' : 'Ditolak'}
-                                </p>
+                                <p class="text-[9px] font-bold ${n.status === 'approved' ? 'text-green-600' : 'text-red-500'} uppercase">${n.status === 'approved' ? 'Disetujui ('+n.grade+')' : 'Ditolak'}</p>
                             </div>
                         </div>
                     </div>
@@ -520,24 +520,30 @@
 
         window.toggleNotifDropdown = () => document.getElementById('notifDropdown').classList.toggle('hidden');
 
+        window.selectGrade = (grade, element) => {
+            window.selectedApprovalGrade = grade;
+            document.querySelectorAll('#approvalGradeButtons .grade-badge').forEach(btn => btn.classList.remove('grade-selected'));
+            element.classList.add('grade-selected');
+        };
+
         window.prepareApproval = (status) => {
             window.selectedApprovalStatus = status;
             document.getElementById('approvalForm').classList.remove('hidden');
             document.getElementById('gradeSelector').classList.toggle('hidden', status === 'rejected');
             window.selectedApprovalGrade = '';
+            document.querySelectorAll('#approvalGradeButtons .grade-badge').forEach(btn => btn.classList.remove('grade-selected'));
             document.getElementById('btnApprove').style.opacity = status === 'approved' ? '1' : '0.5';
             document.getElementById('btnReject').style.opacity = status === 'rejected' ? '1' : '0.5';
         };
 
         window.submitApproval = async () => {
             if (!window.selectedApprovalId) return;
-            const btn = document.getElementById('btnSubmitFinalDecision');
-            const note = document.getElementById('approvalNote').value.trim();
             if (window.selectedApprovalStatus === 'approved' && !window.selectedApprovalGrade) {
                 return showToast("Pilih Grade terlebih dahulu!", "error");
             }
-            btn.disabled = true;
-            btn.innerText = "Mengirim...";
+            const btn = document.getElementById('btnSubmitFinalDecision');
+            const note = document.getElementById('approvalNote').value.trim();
+            btn.disabled = true; btn.innerText = "Mengirim...";
             try {
                 await updateDoc(doc(db, 'artifacts', appId, 'public', 'data', 'logs', window.selectedApprovalId), {
                     status: window.selectedApprovalStatus,
@@ -580,18 +586,18 @@
             document.getElementById('uploadCard').classList.toggle('hidden', !isWorker);
 
             const gallery = document.getElementById('galleryContainer');
-            gallery.innerHTML = activeLogs.filter(l => l.imageUrl).slice(0, 15).map(img => {
-                const statusClass = img.status === 'rejected' ? 'grade-rejected' : (img.status === 'approved' ? `grade-${img.grade}` : 'grade-pending');
-                const label = img.status === 'rejected' ? 'DITOLAK' : (img.status === 'approved' ? img.grade : 'PENDING');
-                return `<div onclick="window.openPreview('${img.id}')" class="group relative aspect-square bg-slate-200 rounded-2xl overflow-hidden border cursor-pointer active:scale-95 transition-transform"><img src="${img.imageUrl}" class="w-full h-full object-cover group-hover:scale-110 transition-all duration-500"><div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all"><span class="grade-badge ${statusClass} scale-90">${label}</span></div></div>`;
+            gallery.innerHTML = activeLogs.filter(l => l.imageUrl).slice(0, 12).map(img => {
+                const sCls = img.status === 'rejected' ? 'grade-rejected' : (img.status === 'approved' ? `grade-${img.grade}` : 'grade-pending');
+                const lbl = img.status === 'rejected' ? 'DITOLAK' : (img.status === 'approved' ? img.grade : 'PENDING');
+                return `<div onclick="window.openPreview('${img.id}')" class="group relative aspect-square bg-slate-200 rounded-2xl overflow-hidden border cursor-pointer active:scale-95 transition-transform"><img src="${img.imageUrl}" class="w-full h-full object-cover"><div class="absolute inset-0 bg-black/40 opacity-0 sm:group-hover:opacity-100 flex items-center justify-center transition-all"><span class="grade-badge ${sCls} scale-90">${lbl}</span></div></div>`;
             }).join('');
             document.getElementById('galleryEmpty').classList.toggle('hidden', activeLogs.length > 0);
 
             document.getElementById('activityLog').innerHTML = activeLogs.map(log => {
-                const date = log.timestamp ? new Date(log.timestamp.toMillis()) : new Date(log.createdAt);
+                const d = log.timestamp ? new Date(log.timestamp.toMillis()) : new Date(log.createdAt);
                 const pay = log.status === 'approved' ? getPay(log.grade) : 0;
                 let gDisp = log.status === 'rejected' ? '<span class="grade-badge grade-rejected">REJECTED</span>' : (log.status === 'approved' ? `<span class="grade-badge grade-${log.grade}">${log.grade}</span>` : '<span class="grade-badge grade-pending">PENDING</span>');
-                return `<tr class="hover:bg-slate-50 cursor-pointer" onclick="window.openPreview('${log.id}')"><td class="px-6 py-4 text-[10px] text-slate-400 font-bold uppercase">${date.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'})}</td><td class="px-6 py-4 text-xs font-black text-slate-800">${log.workerName}</td><td class="px-6 py-4">${gDisp}</td><td class="px-6 py-4 text-right"><span class="text-xs font-black ${pay>0?'text-green-600':'text-slate-300'} tracking-tighter">Rp ${pay.toLocaleString('id-ID')}</span></td></tr>`;
+                return `<tr class="hover:bg-slate-50 cursor-pointer" onclick="window.openPreview('${log.id}')"><td class="px-6 py-4 text-[10px] text-slate-400 font-bold uppercase">${d.toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'})}</td><td class="px-6 py-4 text-xs font-black text-slate-800">${log.workerName}</td><td class="px-6 py-4 text-center">${gDisp}</td><td class="px-6 py-4 text-right font-black ${pay>0?'text-green-600':'text-slate-300'}">Rp ${pay.toLocaleString('id-ID')}</td></tr>`;
             }).join('');
         };
 
@@ -615,70 +621,64 @@
                 badge.innerHTML = `<span class="grade-badge grade-${data.grade}">DISETUJUI</span>`;
                 document.getElementById('detailGradeArea').classList.remove('hidden');
                 document.getElementById('detailGradeContainer').innerHTML = `<span class="grade-badge grade-${data.grade}">${data.grade}</span>`;
-            } else if (data.status === 'rejected') {
-                badge.innerHTML = `<span class="grade-badge grade-rejected">DITOLAK</span>`;
-            } else {
-                badge.innerHTML = `<span class="grade-badge grade-pending">PENDING</span>`;
-                if (isBoss) document.getElementById('approvalActionsArea').classList.remove('hidden');
-            }
+            } else if (data.status === 'rejected') { badge.innerHTML = `<span class="grade-badge grade-rejected">DITOLAK</span>`; }
+            else { badge.innerHTML = `<span class="grade-badge grade-pending">PENDING</span>`; if (isBoss) document.getElementById('approvalActionsArea').classList.remove('hidden'); }
             if (data.bossNote) { document.getElementById('bossNoteArea').classList.remove('hidden'); document.getElementById('detailBossNote').innerText = data.bossNote; }
             document.getElementById('imageModal').classList.remove('hidden');
         };
 
         window.saveConfig = async () => {
-            const role = document.getElementById('roleSelect').value;
-            const code = document.getElementById('bossCode').value;
-            const nameInput = document.getElementById('workerName').value.trim();
-            const token = document.getElementById('ghToken').value.trim();
-            let finalName = role === 'boss' ? MASTER_BOSS_NAME : nameInput;
-            if (role === 'boss' && code !== BOSS_SECRET) return showToast("Kode Bos Salah!", "error");
-            if ((!nameInput && role === 'worker') || !token) return showToast("Mohon isi semua data.", "error");
-            if (role === 'worker') {
-                const docSnap = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'));
-                if (!docSnap.exists() || !(docSnap.data().names || []).includes(nameInput)) return showToast("Nama tidak terdaftar!", "error");
+            const r = document.getElementById('roleSelect').value;
+            const c = document.getElementById('bossCode').value;
+            const n = document.getElementById('workerName').value.trim();
+            const t = document.getElementById('ghToken').value.trim();
+            let finalName = r === 'boss' ? MASTER_BOSS_NAME : n;
+            if (r === 'boss' && c !== BOSS_SECRET) return showToast("Kode Akses Salah!", "error");
+            if ((!n && r === 'worker') || !t) return showToast("Data tidak lengkap.", "error");
+            if (r === 'worker') {
+                const ds = await getDoc(doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'whitelist'));
+                if (!ds.exists() || !(ds.data().names || []).includes(n)) return showToast("Nama tidak terdaftar!", "error");
             }
-            ghConfig = { workerName: finalName, token: token, role: role, active: true };
+            ghConfig = { workerName: finalName, token: t, role: r, active: true };
             localStorage.setItem('gh_config_simple', JSON.stringify(ghConfig));
             location.reload();
         };
 
         window.submitFinalUpload = async () => {
-            const customName = document.getElementById('inputCustomFileName').value.trim();
-            if (!customName || !/^[A-Z][a-z0-9]*(\s[A-Z][a-z0-9]*)*$/.test(customName)) return showToast("Gunakan Kapital di awal kata!", "error");
+            const cn = document.getElementById('inputCustomFileName').value.trim();
+            if (!cn || !/^[A-Z][a-z0-9]*(\s[A-Z][a-z0-9]*)*$/.test(cn)) return showToast("Format: Kapital di awal kata!", "error");
             if (!pendingFileData) return;
             document.getElementById('uploadProgress').classList.replace('hidden', 'flex');
             document.getElementById('uploadConfirmModal').classList.add('hidden');
             try {
-                const fileName = `${customName.replace(/\s+/g, '_')}_${Date.now()}.${pendingFileExt}`;
-                const res = await fetch(`https://api.github.com/repos/${MASTER_OWNER}/${MASTER_REPO}/contents/uploads/${fileName}`, {
+                const fn = `${cn.replace(/\s+/g, '_')}_${Date.now()}.${pendingFileExt}`;
+                const res = await fetch(`https://api.github.com/repos/${MASTER_OWNER}/${MASTER_REPO}/contents/uploads/${fn}`, {
                     method: 'PUT',
                     headers: { 'Authorization': `token ${ghConfig.token}`, 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: `Upload: ${customName}`, content: pendingFileData })
+                    body: JSON.stringify({ message: `Upload: ${cn}`, content: pendingFileData })
                 });
                 if (res.ok) {
-                    const data = await res.json();
+                    const d = await res.json();
                     await addDoc(collection(db, 'artifacts', appId, 'public', 'data', 'logs'), {
-                        workerName: ghConfig.workerName,
-                        fileName: customName, imageUrl: data.content.download_url,
-                        timestamp: serverTimestamp(), createdAt: Date.now(),
-                        status: 'pending', grade: '', bossNote: ''
+                        workerName: ghConfig.workerName, fileName: cn, imageUrl: d.content.download_url,
+                        timestamp: serverTimestamp(), createdAt: Date.now(), status: 'pending', grade: '', bossNote: ''
                     });
-                    showToast("Pekerjaan terkirim! Menunggu persetujuan.");
+                    showToast("Terkirim! Menunggu persetujuan.");
                 } else { showToast("Gagal GitHub!", "error"); }
             } catch (err) { showToast("Error Jaringan.", "error"); }
             document.getElementById('uploadProgress').classList.replace('flex', 'hidden');
         };
 
-        window.handleFileUpload = (event) => {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-            reader.onload = () => {
-                pendingFileData = reader.result.split(',')[1];
-                pendingFileExt = file.name.split('.').pop();
-                document.getElementById('uploadPreviewImg').src = reader.result;
+        window.handleFileUpload = (e) => {
+            const f = e.target.files[0];
+            const r = new FileReader();
+            r.onload = () => {
+                pendingFileData = r.result.split(',')[1];
+                pendingFileExt = f.name.split('.').pop();
+                document.getElementById('uploadPreviewImg').src = r.result;
                 document.getElementById('uploadConfirmModal').classList.remove('hidden');
             };
-            reader.readAsDataURL(file);
+            r.readAsDataURL(f);
         };
 
         window.handleLogout = () => { localStorage.removeItem('gh_config_simple'); location.reload(); };
@@ -692,14 +692,14 @@
         const showToast = (msg, type = 'success') => {
             const t = document.getElementById('toast');
             document.getElementById('toastMessage').innerText = msg;
-            t.className = `fixed bottom-6 left-1/2 -translate-x-1/2 p-4 rounded-2xl shadow-2xl z-[350] text-xs font-black flex transition-all transform items-center ${type === 'error' ? 'bg-red-600' : 'bg-slate-900'} text-white`;
+            t.className = `fixed bottom-6 left-1/2 -translate-x-1/2 p-4 rounded-2xl shadow-2xl z-[500] text-[10px] font-black flex transition-all transform items-center ${type === 'error' ? 'bg-red-600' : 'bg-slate-900'} text-white`;
             t.classList.remove('translate-y-24', 'opacity-0');
             setTimeout(() => t.classList.add('translate-y-24', 'opacity-0'), 3000);
         };
         window.handleStatusClick = () => {
             if (!ghConfig.active) {
-                const card = document.getElementById('accessPanelCard');
-                if (card) { card.classList.add('shake-animate'); showToast("Lengkapi data di panel ini untuk login!", "info"); setTimeout(() => card.classList.remove('shake-animate'), 500); }
+                const c = document.getElementById('accessPanelCard');
+                if (c) { c.classList.add('shake-animate'); showToast("Lengkapi data di panel ini!", "info"); setTimeout(() => c.classList.remove('shake-animate'), 500); }
             }
         };
 
