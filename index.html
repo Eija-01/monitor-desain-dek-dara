@@ -299,7 +299,7 @@
         </div>
     </div>
 
-    <!-- Modal Konfirmasi Hapus Log (Existing) -->
+    <!-- Modal Konfirmasi Hapus Log -->
     <div id="confirmDeleteModal" class="fixed inset-0 z-[200] modal-overlay hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
             <div class="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -314,7 +314,7 @@
         </div>
     </div>
 
-    <!-- Modal Konfirmasi Hapus Pekerja (NEW REVISI) -->
+    <!-- Modal Konfirmasi Hapus Pekerja -->
     <div id="confirmDeleteWorkerModal" class="fixed inset-0 z-[200] modal-overlay hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center">
             <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -342,7 +342,7 @@
         // KONFIGURASI MASTER & KUSTOMISASI
         // ==========================================
         const MASTER_BOSS_NAME = "Bang Eija"; 
-        const BOSS_SECRET = "BOSQUE"; 
+        const BOSS_SECRET = "bossque"; 
         const MASTER_OWNER = "Eija-01";
         const MASTER_REPO = "monitor-desain-dek-dara";
         const RATE = 5000;
@@ -367,7 +367,7 @@
         let ghConfig = JSON.parse(localStorage.getItem('gh_config_simple') || '{"workerName":"","token":"","role":"worker","active":false}');
         let activeLogs = [];
         let logToDelete = null;
-        let workerToDelete = null; // State pekerja yang akan dihapus
+        let workerToDelete = null; 
         let workerWhitelist = [];
         
         let pendingFileData = null;
@@ -500,7 +500,6 @@
             } catch (e) { showToast("Gagal update cloud.", "error"); }
         };
 
-        // Fungsi awal untuk memicu modal hapus pekerja
         window.removeWorkerFromWhitelist = (name) => {
             workerToDelete = name;
             document.getElementById('confirmDeleteWorkerModal').classList.remove('hidden');
@@ -511,7 +510,6 @@
             document.getElementById('confirmDeleteWorkerModal').classList.add('hidden');
         };
 
-        // Eksekusi penghapusan pekerja setelah konfirmasi modal
         document.getElementById('btnConfirmDeleteWorker').onclick = async () => {
             if (!workerToDelete) return;
             const newList = workerWhitelist.filter(n => n !== workerToDelete);
